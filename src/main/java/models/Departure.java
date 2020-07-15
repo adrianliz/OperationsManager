@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-import static controllers.OperationsReader.TIME_FORMAT;
+import controllers.Config;
 
 public class Departure extends Operation {
   private String arrivalAirport;
@@ -14,9 +14,9 @@ public class Departure extends Operation {
   private LocalTime OBT;
   private LocalTime TOT;
 
-  public Departure(Scanner operation) throws ParseException {
-    super(operation);
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern(TIME_FORMAT);
+  public Departure(Scanner operation, Config config) throws ParseException {
+    super(operation, config);
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern(config.getString(Config.TIME_FORMAT));
 
     arrivalAirport = operation.next();
     STD = LocalTime.parse(operation.next(), dtf);

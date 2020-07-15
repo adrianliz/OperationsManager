@@ -1,14 +1,11 @@
 package models;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Scanner;
-import java.util.UUID;
 
-import static controllers.OperationsReader.TIME_FORMAT;
+import controllers.Config;
 
 public class Landing extends Operation {
   enum ParkingType {HA, P, C, HE}
@@ -20,9 +17,9 @@ public class Landing extends Operation {
   private LocalTime LDT;
   private LocalTime IBT;
 
-  public Landing(Scanner operation) throws ParseException {
-    super(operation);
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern(TIME_FORMAT);
+  public Landing(Scanner operation, Config config) throws ParseException {
+    super(operation, config);
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern(config.getString(Config.TIME_FORMAT));
 
     departureAirport = operation.next();
     STA = LocalTime.parse(operation.next(), dtf);
