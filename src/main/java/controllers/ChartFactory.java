@@ -8,13 +8,13 @@ import models.charts.SchengenChart;
 
 public class ChartFactory {
 
-  IChart newChart(StatisticType statisticType, OperationsStatistics operationsStatistics) {
+  IChart newChart(StatisticType statisticType) {
     switch (statisticType) {
       case SCHENGEN -> {
-        return new SchengenChart(operationsStatistics);
+        return new SchengenChart();
       }
       case TIPO_AERONAVE -> {
-        return new AircraftTypeChart(operationsStatistics);
+        return new AircraftTypeChart();
       }
       default -> {
         return null;

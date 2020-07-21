@@ -1,12 +1,12 @@
 package models;
 
 public enum AircraftType {
-  GRAN_TAMANIO("GRAN TAMAÑO"),
+  GRAN_TAMANIO("AERONAVES GRAN TAMAÑO"),
   JET("JET"),
   HELICOPTEROS("HELICÓPTEROS"),
   ESTADO("AERONAVES DE ESTADO"),
   GENERAL("AVIACIÓN GENERAL"),
-  OTRO("OTRO");
+  DESCONOCIDO("DESCONOCIDO");
 
   private final String aircraftType;
 
@@ -21,7 +21,7 @@ public enum AircraftType {
       }
     }
 
-    return AircraftType.OTRO;
+    return null;
   }
 
   @Override

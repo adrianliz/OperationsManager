@@ -1,9 +1,8 @@
 package models;
 
 public enum StatisticType {
-  SCHENGEN("SCHENGEN"),
-  TIPO_AERONAVE("TIPO AERONAVE"),
-  NINGUNA("NINGUNA");
+  SCHENGEN("CLASIFICAR POR SCHENGEN"),
+  TIPO_AERONAVE("CLASIFICAR POR TIPO AERONAVE");
 
   private final String statisticType;
 
@@ -18,7 +17,7 @@ public enum StatisticType {
       }
     }
 
-    return StatisticType.NINGUNA;
+    return null;
   }
 
   @Override

@@ -14,6 +14,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 
 public class OperationsView extends JFrame implements ActionListener {
@@ -21,7 +23,8 @@ public class OperationsView extends JFrame implements ActionListener {
 
   private JPanel statisticSelectionPane;
   private JPanel chartPane;
-  private JComboBox yearComboBox;
+  private JComboBox firstYearComboBox;
+  private JComboBox secondYearComboBox;
   private JComboBox statisticComboBox;
 
   public OperationsView(IViewListener controller, Config config) {
@@ -87,11 +90,13 @@ public class OperationsView extends JFrame implements ActionListener {
   private void createStatisticSelection(JPanel panel) {
     statisticSelectionPane = new JPanel();
     statisticSelectionPane.setLayout(new FlowLayout(FlowLayout.RIGHT, 25, 0));
-    
-    yearComboBox = new JComboBox();
+
     statisticComboBox = new JComboBox();
-    statisticSelectionPane.add(yearComboBox);
+    firstYearComboBox = new JComboBox();
+    secondYearComboBox = new JComboBox();
     statisticSelectionPane.add(statisticComboBox);
+    statisticSelectionPane.add(firstYearComboBox);
+    statisticSelectionPane.add(secondYearComboBox);
 
     JButton acceptStatisticButton = new JButton(Config.ACCEPT_STATISTIC_BUTTON);
     acceptStatisticButton.setPreferredSize(new Dimension(80, 40));
@@ -122,34 +127,41 @@ public class OperationsView extends JFrame implements ActionListener {
   }
 
   public void initStatisticSelection(OperationsStatistics operationsStatistics) {
-    for (int year: operationsStatistics.getDifferentYears()) {
-      yearComboBox.addItem(year);
-    }
-
     for (StatisticType statisticType: StatisticType.values()) {
       statisticComboBox.addItem(statisticType.toString());
     }
 
+    statisticComboBox.addItemListener(e -> {
+      if (StatisticType.getStatisticType((String) e.getItem()) != StatisticType.SCHENGEN) {
+        secondYearComboBox.setVisible(true);
+      } else {
+        secondYearComboBox.setVisible(false);
+      }
+    });
+
+    for (int year: operationsStatistics.getDifferentYears()) {
+      firstYearComboBox.addItem(year);
+      secondYearComboBox.addItem(year);
+    }
+
+    secondYearComboBox.setVisible(false);
     statisticSelectionPane.setVisible(true);
   }
 
   public void initChartView(Chart chart) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        chartPane.removeAll();
+    SwingUtilities.invokeLater(() -> {
+      chartPane.removeAll();
 
-        XChartPanel chartWrapper = new XChartPanel<>(chart);
-        chartPane.add(chartWrapper);
+      XChartPanel chartWrapper = new XChartPanel<>(chart);
+      chartPane.add(chartWrapper);
 
-        chartPane.revalidate();
-      }
+      chartPane.revalidate();
     });
   }
 
-  private Tuple<Integer, StatisticType> readStatisticSelection() {
-    return new Tuple((int) yearComboBox.getSelectedItem(),
-                      (StatisticType) StatisticType.getStatisticType((String) statisticComboBox.getSelectedItem()));
+  private Tuple<Tuple<Integer, Integer>, StatisticType> readStatisticSelection() {
+    return new Tuple(StatisticType.getStatisticType((String) statisticComboBox.getSelectedItem()),
+      new Tuple(firstYearComboBox.getSelectedItem(), secondYearComboBox.getSelectedItem()));
   }
 
   @Override

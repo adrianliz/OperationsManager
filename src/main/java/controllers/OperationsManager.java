@@ -35,9 +35,9 @@ public class OperationsManager implements IViewListener {
     }
   }
 
-  private void generateChart(int year, StatisticType statisticType) {
-    IChart chart = chartFactory.newChart(statisticType, operationsStatistics);
-    view.initChartView(chart.createChart(year));
+  private void generateChart(StatisticType statisticType, Tuple<Integer, Integer> years) {
+    IChart chart = chartFactory.newChart(statisticType);
+    view.initChartView(chart.createChart(operationsStatistics, years));
   }
 
   @Override
@@ -46,7 +46,7 @@ public class OperationsManager implements IViewListener {
       case OPEN -> openFile();
       case ACCEPT_STATISTIC -> {
         Tuple tuple = (Tuple) o;
-        generateChart((int) tuple.a, (StatisticType) tuple.b);
+        generateChart((StatisticType) tuple.a, (Tuple<Integer, Integer>) tuple.b);
       }
     }
   }

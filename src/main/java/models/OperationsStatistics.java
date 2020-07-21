@@ -58,6 +58,16 @@ public class OperationsStatistics {
     return numOperations;
   }
 
+  public List<Integer> getOperationsCount(List<Integer> years, AircraftType aircraftType) {
+    List<Integer> numOperations = new ArrayList<>();
+
+    for (int year: years) {
+      numOperations.add(getOperationsCount(year, aircraftType));
+    }
+
+    return numOperations;
+  }
+
   public int getSchengenOperations(int year) {
     int numOperations = 0;
 

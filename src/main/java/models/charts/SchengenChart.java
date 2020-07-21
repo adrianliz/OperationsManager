@@ -2,6 +2,7 @@ package models.charts;
 
 import controllers.Config;
 import models.OperationsStatistics;
+import models.Tuple;
 import org.knowm.xchart.PieChart;
 import org.knowm.xchart.PieChartBuilder;
 import org.knowm.xchart.PieSeries;
@@ -9,22 +10,15 @@ import org.knowm.xchart.internal.chartpart.Chart;
 import org.knowm.xchart.style.PieStyler;
 
 public class SchengenChart implements IChart {
-  private OperationsStatistics operationsStatistics;
-
-  public SchengenChart(OperationsStatistics operationsStatistics) {
-    this.operationsStatistics = operationsStatistics;
-  }
-  
   @Override
-  public Chart createChart(int year) {
-
+  public Chart createChart(OperationsStatistics operationsStatistics, Tuple<Integer, Integer> years) {
     PieChart chart =
       new PieChartBuilder()
         .width(Config.screenDimension.width - 50)
         .title(Config.SCHENGEN_CHART_TITLE)
         .build();
 
-    int schengenOperations = operationsStatistics.getSchengenOperations(year);
+    int schengenOperations = operationsStatistics.getSchengenOperations(years.a);
 
     chart.getStyler().setAnnotationType(PieStyler.AnnotationType.LabelAndValue);
     chart.getStyler().setAnnotationDistance(.82);
@@ -34,7 +28,7 @@ public class SchengenChart implements IChart {
     chart.getStyler().setSumVisible(true);
     chart.getStyler().setSumFontSize(20f);
     chart.addSeries("SCHENGEN", schengenOperations);
-    chart.addSeries("NO SCHENGEN", operationsStatistics.getOperationsCount(year) - schengenOperations);
+    chart.addSeries("NO SCHENGEN", operationsStatistics.getOperationsCount(years.a) - schengenOperations);
 
     return chart;
   }
