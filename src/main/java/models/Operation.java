@@ -1,44 +1,64 @@
 package models;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
-import java.util.UUID;
-
+import com.poiji.annotation.ExcelCell;
+import com.poiji.annotation.ExcelCellName;
 import controllers.Config;
 
-public abstract class Operation {
-  protected UUID idOperation;
-  protected String use;
-  protected String type;
-  protected Date date;
-  protected String schengen;
-  protected Aircraft aircraft;
+import java.util.Calendar;
+import java.util.Date;
 
-  private Config config;
+public class Operation {
+  @ExcelCell(3)
+  private Date dateRaw;
+  private Calendar date;
+  @ExcelCell(2)
+  private String aircraftTypeRaw;
+  private AircraftType aircraftType;
+  @ExcelCell(4)
+  private String aircraftModel;
+  @ExcelCell(6)
+  private double aircraftMTOW; //aircraft max weight at arrival
+  @ExcelCell(7)
+  private String CIA; //operation company
+  @ExcelCell(8)
+  private String airport;
+  @ExcelCellName("SCHENGEN/NO-SCHENGEN")
+  private String schengen;
 
-  public Operation(Scanner operation, Config config) throws ParseException {
-    idOperation = UUID.randomUUID();
-    use = operation.next();
-    type = operation.next();
-    String aircraftType = operation.next();
-    date = new SimpleDateFormat(config.getString(Config.DATE_FORMAT)).parse(operation.next());
+  public Calendar getDate() {
+    if (date == null) {
+      date = Calendar.getInstance();
+      date.setTime(dateRaw);
+    }
 
-    aircraft = new Aircraft(aircraftType, operation.next(), operation.next(),
-                            Double.parseDouble(operation.next()), operation.next());
-    this.config = config;
+    return date;
   }
 
-  @Override
-  public String toString() {
-    return "Operation{" +
-      "idOperation=" + idOperation +
-      ", use='" + use + '\'' +
-      ", type='" + type + '\'' +
-      ", date=" + new SimpleDateFormat(config.getString(Config.DATE_FORMAT)).format(date) +
-      ", schengen='" + schengen + '\'' +
-      ", aircraft=" + aircraft +
-      '}';
+  public AircraftType getAircraftType() {
+    if (aircraftType == null) {
+      aircraftType = AircraftType.getAircraftType(aircraftTypeRaw);
+    }
+
+    return aircraftType;
+  }
+
+  public String getAircraftModel() {
+    return aircraftModel;
+  }
+
+  public double getAircraftMTOW() {
+    return aircraftMTOW;
+  }
+
+  public String getCIA() {
+    return CIA;
+  }
+
+  public String getAirport() {
+    return airport;
+  }
+
+  public boolean isSchengen() {
+    return schengen.equals(Config.SCHENGEN);
   }
 }

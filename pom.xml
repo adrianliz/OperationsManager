@@ -13,7 +13,7 @@
     <maven.compiler.source>14.0.1</maven.compiler.source>
     <maven.compiler.target>14.0.1</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <mainClass>controllers.Main</mainClass>
+    <mainClass>controllers.OperationsManager</mainClass>
   </properties>
 
   <profiles>
@@ -27,30 +27,39 @@
         <resources>
           <resource>
             <directory>src/main/resources/dev</directory>
-            <filtering>false</filtering>
           </resource>
         </resources>
 
         <plugins>
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+              <execution>
+                <id>copy-resources</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${basedir}/target/config</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>resources</directory>
+                      <filtering>false</filtering>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.8.1</version>
             <configuration>
               <release>14</release>
-            </configuration>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <configuration>
-              <archive>
-                <manifest>
-                  <addClasspath>true</addClasspath>
-                  <mainClass>controllers.OperationsReader</mainClass>
-                </manifest>
-              </archive>
             </configuration>
           </plugin>
 
@@ -65,7 +74,7 @@
               </descriptorRefs>
               <archive>
                 <manifest>
-                  <mainClass>controllers.Main</mainClass>
+                  <mainClass>controllers.OperationsManager</mainClass>
                 </manifest>
                 <manifestEntries>
                   <Multi-Release>true</Multi-Release>
@@ -107,15 +116,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
-      <version>4.1.2</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml</artifactId>
-      <version>4.1.2</version>
+      <groupId>com.github.ozlerhakan</groupId>
+      <artifactId>poiji</artifactId>
+      <version>2.9.0</version>
     </dependency>
 
     <dependency>
@@ -128,6 +131,18 @@
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
       <version>1.9.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.vincenzopalazzo</groupId>
+      <artifactId>material-ui-swing</artifactId>
+      <version>1.1.1_pre-release_6.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.knowm.xchart</groupId>
+      <artifactId>xchart</artifactId>
+      <version>3.6.4</version>
     </dependency>
   </dependencies>
 </project>
