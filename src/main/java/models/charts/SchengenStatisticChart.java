@@ -9,24 +9,23 @@ import org.knowm.xchart.style.PieStyler;
 
 import java.util.List;
 
-public class SchengenChart implements IChart {
+public class SchengenStatisticChart implements IStatisticChart {
   @Override
   public Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years) {
     PieChart chart =
       new PieChartBuilder()
-        .width(Config.screenDimension.width - 100)
         .title(Config.SCHENGEN_CHART)
         .build();
 
     int schengenOperations = operationsStatistics.getSchengenOperations(years.get(0));
 
-    PieStyler pieStyler = chart.getStyler();
-    pieStyler.setLegendVisible(true);
-    pieStyler.setDrawAllAnnotations(true);
-    pieStyler.setAnnotationType(PieStyler.AnnotationType.LabelAndPercentage);
-    pieStyler.setAnnotationDistance(1.15);
-    pieStyler.setPlotContentSize(.8);
-    pieStyler.setStartAngleInDegrees(90);
+    PieStyler styler = chart.getStyler();
+    styler.setLegendVisible(true);
+    styler.setDrawAllAnnotations(true);
+    styler.setAnnotationType(PieStyler.AnnotationType.LabelAndPercentage);
+    styler.setAnnotationDistance(1.15);
+    styler.setPlotContentSize(.8);
+    styler.setStartAngleInDegrees(90);
 
     chart.addSeries(Config.SCHENGEN_SERIES, schengenOperations);
     chart.addSeries(Config.NO_SCHENGEN_SERIES,

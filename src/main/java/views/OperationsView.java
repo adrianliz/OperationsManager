@@ -45,9 +45,11 @@ public class OperationsView extends JFrame implements ActionListener {
     createMenuBar(northPane);
 
     JPanel centerPane = new JPanel();
+    centerPane.setLayout(new BoxLayout(centerPane, BoxLayout.Y_AXIS));
     createStatisticSelection(centerPane);
 
     chartPane = new JPanel();
+    chartPane.setLayout(new GridLayout(1, 1));
     chartPane.setBorder(BorderFactory.createBevelBorder(1));
     chartPane.setVisible(false);
     centerPane.add(chartPane);
@@ -59,11 +61,20 @@ public class OperationsView extends JFrame implements ActionListener {
     add(stateStatus, BorderLayout.SOUTH);
 
     setExtendedState(JFrame.MAXIMIZED_BOTH);
-    setSize(Config.screenDimension);
-    setResizable(true);
+    setSize(getEffectiveScreenSize());
+    setMinimumSize(new Dimension(Config.MINIMUM_WINDOW_W, Config.MINIMUM_WINDOW_H));
     setLocationRelativeTo(null);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     setVisible(true);
+  }
+
+  private Dimension getEffectiveScreenSize() {
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+    Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
+    int taskBarSize = screenInsets.bottom;
+
+    return new Dimension(screenSize.width - getWidth(), screenSize.height - taskBarSize - getHeight());
   }
 
   private JMenuItem createMenuItem(String label, boolean enable) {
@@ -97,7 +108,6 @@ public class OperationsView extends JFrame implements ActionListener {
 
   private JButton createButton(String label, boolean enable) {
     JButton button = new JButton(label);
-    button.setPreferredSize(new Dimension(Config.W_BUTTON, Config.H_BUTTON));
     button.addActionListener(this);
     button.setActionCommand(label);
     button.setEnabled(enable);
@@ -121,7 +131,7 @@ public class OperationsView extends JFrame implements ActionListener {
 
   private void createStatisticSelection(JPanel panel) {
     statisticPane = new JPanel();
-    statisticPane.setLayout(new FlowLayout(FlowLayout.RIGHT, Config.H_GAP_STATISTIC_PANE, Config.V_GAP_STATISTIC_PANE));
+    statisticPane.setLayout(new FlowLayout(FlowLayout.CENTER, Config.H_GAP_STATISTIC_PANE, 0));
 
     statisticSelection = new JComboBox<>();
     firstYearSelection = new JComboBox<>();
@@ -181,6 +191,10 @@ public class OperationsView extends JFrame implements ActionListener {
 
     lastYearSelection.setVisible(false);
     statisticPane.setVisible(true);
+  }
+
+  public void disableChartPane() {
+    chartPane.setVisible(false);
   }
 
   public void initChartView(Chart chart) {

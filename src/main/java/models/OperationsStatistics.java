@@ -80,4 +80,15 @@ public class OperationsStatistics {
 
     return operationsCount;
   }
+
+  public int getMTOWAverage(int year) {
+    int sum = 0;
+
+    List<Operation> operations = getOperationsIn(year);
+    for (Operation operation: operations) {
+      sum += operation.getAircraftMTOW();
+    }
+
+    return sum / operations.size();
+  }
 }

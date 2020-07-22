@@ -1,18 +1,22 @@
 package controllers;
 
 import models.StatisticType;
-import models.charts.AircraftTypeChart;
-import models.charts.IChart;
-import models.charts.SchengenChart;
+import models.charts.AircraftTypeStatisticChart;
+import models.charts.IStatisticChart;
+import models.charts.MTOWStaticChart;
+import models.charts.SchengenStatisticChart;
 
 public class ChartFactory {
-  IChart newChart(StatisticType statisticType) {
+  IStatisticChart newChart(StatisticType statisticType) {
     switch (statisticType) {
       case SCHENGEN -> {
-        return new SchengenChart();
+        return new SchengenStatisticChart();
       }
       case TIPO_AERONAVE -> {
-        return new AircraftTypeChart();
+        return new AircraftTypeStatisticChart();
+      }
+      case MEDIA_MTOW -> {
+        return new MTOWStaticChart();
       }
       default -> {
         return null;

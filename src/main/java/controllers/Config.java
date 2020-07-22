@@ -21,23 +21,21 @@ public class Config {
   public static final String LANDINGS_SHEET = "LANDINGS_SHEET";
   public static final String DEPARTURES_SHEET = "DEPARTURES_SHEET";
   public static final String DATE_FORMAT = "DATE_FORMAT";
-  public static Dimension screenDimension;
 
   /* Static config */
   public static final int DATE_FORMAT_INDEX = 14;
   public static final String SCHENGEN = "SCHENGEN";
 
   /* View */
+  public static final int MINIMUM_WINDOW_W = 800;
+  public static final int MINIMUM_WINDOW_H = 800;
   public static final int VERTICAL_GAP_MENU = 10;
   public static final int MENU_ITEMS = 1;
-  public static final int W_BUTTON = 80;
-  public static final int H_BUTTON = 40;
   public static final int H_GAP_STATISTIC_PANE = 25;
-  public static final int V_GAP_STATISTIC_PANE = 25;
 
-  public static final String FILE_MENU = "File";
-  public static final String OPEN_MENU_ITEM = "Open...";
-  public static final String ACCEPT_STATISTIC_BUTTON = "Ok";
+  public static final String FILE_MENU = "Fichero";
+  public static final String OPEN_MENU_ITEM = "Abrir...";
+  public static final String ACCEPT_STATISTIC_BUTTON = "OK";
 
   public static final String EXCEL_DESC = "Excel file";
   public static final String EXCEL_EXT = "xlsx";
@@ -48,9 +46,12 @@ public class Config {
   public static final String AIRCRAFT_TYPE_CHART = "Tipos de aeronaves";
   public static final String X_AIRCRAFT_TYPE = "Año";
   public static final String Y_AIRCRAFT_TYPE = "Total";
+  public static final String MTOW_CHART = "Media MTOW";
+  public static final String X_MTOW = "Año";
+  public static final String Y_MTOW = "Media";
 
   public static final String INITIAL_STATE = "Abre un nuevo fichero de operaciones";
-  public static final String OP_READED = "Operaciones leidas";
+  public static final String FILE_STATE = "Fichero:";
 
   public static final String LAF_ERROR = "No se pudo aplicar el LAF";
   public static final String CONFIG_ERROR = "No se pudo leer el fichero de configuración";
@@ -62,7 +63,6 @@ public class Config {
   public Config() throws ConfigurationException {
     Configurations configs = new Configurations();
     config = configs.properties(new File(CONFIG_FILE));
-    screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
   }
 
   public int getInt(String key) {

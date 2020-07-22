@@ -2,12 +2,11 @@ package controllers;
 
 import com.poiji.exception.InvalidExcelFileExtension;
 import mdlaf.MaterialLookAndFeel;
-import mdlaf.themes.JMarsDarkTheme;
 import models.Operation;
 import models.OperationsStatistics;
 import models.StatisticType;
 import models.Tuple;
-import models.charts.IChart;
+import models.charts.IStatisticChart;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import views.OperationsView;
 
@@ -24,6 +23,8 @@ public class OperationsManager implements IViewListener {
     config = new Config();
     view = new OperationsView(this, config);
     chartFactory = new ChartFactory();
+
+    openFile();
   }
 
   private void openFile() {
@@ -39,7 +40,8 @@ public class OperationsManager implements IViewListener {
         } else {
           operationsStatistics = new OperationsStatistics(operations);
 
-          view.setStateStatus(Config.OP_READED);
+          view.disableChartPane();
+          view.setStateStatus(Config.FILE_STATE + " " + filePath);
           view.initStatisticSelection(operationsStatistics);
         }
       } catch (InvalidExcelFileExtension e) {
@@ -49,9 +51,8 @@ public class OperationsManager implements IViewListener {
   }
 
   private void generateChart(StatisticType statisticType, List<Integer> years) {
-    IChart chart = chartFactory.newChart(statisticType);
+    IStatisticChart chart = chartFactory.newChart(statisticType);
     view.initChartView(chart.createChart(operationsStatistics, years));
-    view.setStateStatus("");
   }
 
   @Override
@@ -68,7 +69,7 @@ public class OperationsManager implements IViewListener {
   public static void main(String[] args) {
     SwingUtilities.invokeLater (() -> {
         try {
-          UIManager.setLookAndFeel(new MaterialLookAndFeel(new JMarsDarkTheme()));
+          UIManager.setLookAndFeel(new MaterialLookAndFeel());
           new OperationsManager();
         } catch (UnsupportedLookAndFeelException e) {
           System.err.println(Config.LAF_ERROR); //TODO logger

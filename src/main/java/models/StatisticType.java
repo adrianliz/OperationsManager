@@ -1,8 +1,9 @@
 package models;
 
 public enum StatisticType {
-  SCHENGEN("CLASIFICAR POR SCHENGEN"),
-  TIPO_AERONAVE("CLASIFICAR POR TIPO AERONAVE");
+  SCHENGEN("Estadística Schengen"),
+  TIPO_AERONAVE("Estadística Tipo Aeronave"),
+  MEDIA_MTOW("Estadística Media MTOW");
 
   private final String statisticType;
 

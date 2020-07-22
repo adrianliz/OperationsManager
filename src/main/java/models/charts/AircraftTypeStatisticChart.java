@@ -9,12 +9,11 @@ import org.knowm.xchart.internal.chartpart.Chart;
 
 import java.util.List;
 
-public class AircraftTypeChart implements IChart {
+public class AircraftTypeStatisticChart implements IStatisticChart {
   @Override
   public Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years) {
     CategoryChart chart =
       new CategoryChartBuilder()
-        .width(Config.screenDimension.width - 100)
         .title(Config.AIRCRAFT_TYPE_CHART)
         .xAxisTitle(Config.X_AIRCRAFT_TYPE)
         .yAxisTitle(Config.Y_AIRCRAFT_TYPE)
