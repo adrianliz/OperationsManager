@@ -7,16 +7,33 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
+import javax.swing.*;
+
 public class Config {
   private static final String CONFIG_FILE = "config.properties";
+
+  /* Dinamic config */
+  public static final String APP_NAME = "APP_NAME";
+  public static final String APP_VERSION = "APP_VERSION";
+  public static final String APP_ICON = "APP_ICON";
+  public static final String ALERT_ICON = "ALERT_ICON";
+  public static final String HEADER_START = "HEADER_START";
+  public static final String LANDINGS_SHEET = "LANDINGS_SHEET";
+  public static final String DEPARTURES_SHEET = "DEPARTURES_SHEET";
+  public static final String DATE_FORMAT = "DATE_FORMAT";
+  public static Dimension screenDimension;
 
   /* Static config */
   public static final int DATE_FORMAT_INDEX = 14;
   public static final String SCHENGEN = "SCHENGEN";
 
   /* View */
-  public static final int WINDOW_WIDTH = 1080;
-  public static final int WINDOW_HEIGHT = 720;
+  public static final int VERTICAL_GAP_MENU = 10;
+  public static final int MENU_ITEMS = 1;
+  public static final int W_BUTTON = 80;
+  public static final int H_BUTTON = 40;
+  public static final int H_GAP_STATISTIC_PANE = 25;
+  public static final int V_GAP_STATISTIC_PANE = 25;
 
   public static final String FILE_MENU = "File";
   public static final String OPEN_MENU_ITEM = "Open...";
@@ -25,15 +42,20 @@ public class Config {
   public static final String EXCEL_DESC = "Excel file";
   public static final String EXCEL_EXT = "xlsx";
 
-  public static final String SCHENGEN_CHART_TITLE = "Schengen operations";
+  public static final String SCHENGEN_CHART = "Operaciones Schengen";
+  public static final String SCHENGEN_SERIES = "Schengen";
+  public static final String NO_SCHENGEN_SERIES = "No schengen";
+  public static final String AIRCRAFT_TYPE_CHART = "Tipos de aeronaves";
+  public static final String X_AIRCRAFT_TYPE = "Año";
+  public static final String Y_AIRCRAFT_TYPE = "Total";
 
-  /* Dinamic config */
-  public static final String APP_NAME = "APP_NAME";
-  public static final String HEADER_START = "HEADER_START";
-  public static final String LANDINGS_SHEET = "LANDINGS_SHEET";
-  public static final String DEPARTURES_SHEET = "DEPARTURES_SHEET";
-  public static final String DATE_FORMAT = "DATE_FORMAT";
-  public static Dimension screenDimension;
+  public static final String INITIAL_STATE = "Abre un nuevo fichero de operaciones";
+  public static final String OP_READED = "Operaciones leidas";
+
+  public static final String LAF_ERROR = "No se pudo aplicar el LAF";
+  public static final String CONFIG_ERROR = "No se pudo leer el fichero de configuración";
+  public static final String FILE_EXT_ERROR = "Extensión de fichero inválida";
+  public static final String OP_NOT_FOUND = "No se han encontrado operaciones";
 
   private Configuration config;
 
@@ -51,7 +73,7 @@ public class Config {
     return config.getString(key);
   }
 
-  public File getFile(String key) {
-    return new File(this.getClass().getResource(config.getString(key)).getPath());
+  public ImageIcon getIcon(String key) {
+    return new ImageIcon(this.getClass().getResource(getString(key)));
   }
 }

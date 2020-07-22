@@ -4,6 +4,8 @@ import models.OperationsStatistics;
 import models.Tuple;
 import org.knowm.xchart.internal.chartpart.Chart;
 
+import java.util.List;
+
 public interface IChart {
- Chart createChart(OperationsStatistics operationsStatistics, Tuple<Integer, Integer> years);
+ Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years);
 }

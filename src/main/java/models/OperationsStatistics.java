@@ -39,6 +39,7 @@ public class OperationsStatistics {
       }
     }
 
+    Collections.sort(years);
     return years;
   }
 
@@ -47,36 +48,36 @@ public class OperationsStatistics {
   }
 
   public int getOperationsCount(int year, AircraftType aircraftType) {
-    int numOperations = 0;
+    int operationsCount = 0;
 
     for (Operation operation: getOperationsIn(year)) {
       if (operation.getAircraftType().equals(aircraftType)) {
-        numOperations++;
+        operationsCount++;
       }
     }
 
-    return numOperations;
+    return operationsCount;
   }
 
   public List<Integer> getOperationsCount(List<Integer> years, AircraftType aircraftType) {
-    List<Integer> numOperations = new ArrayList<>();
+    List<Integer> operationsCount = new ArrayList<>();
 
     for (int year: years) {
-      numOperations.add(getOperationsCount(year, aircraftType));
+      operationsCount.add(getOperationsCount(year, aircraftType));
     }
 
-    return numOperations;
+    return operationsCount;
   }
 
   public int getSchengenOperations(int year) {
-    int numOperations = 0;
+    int operationsCount = 0;
 
     for (Operation operation: getOperationsIn(year)) {
       if (operation.isSchengen()) {
-        numOperations++;
+        operationsCount++;
       }
     }
 
-    return numOperations;
+    return operationsCount;
   }
 }

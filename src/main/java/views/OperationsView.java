@@ -2,7 +2,6 @@ package views;
 
 import controllers.Config;
 import controllers.IViewListener;
-import models.AircraftType;
 import models.OperationsStatistics;
 import models.StatisticType;
 import models.Tuple;
@@ -14,44 +13,53 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OperationsView extends JFrame implements ActionListener {
-  private IViewListener controller;
+  private final IViewListener controller;
+  private final Config config;
 
-  private JPanel statisticSelectionPane;
+  private JLabel stateStatus;
+  private JPanel statisticPane;
   private JPanel chartPane;
-  private JComboBox firstYearComboBox;
-  private JComboBox secondYearComboBox;
-  private JComboBox statisticComboBox;
+  private JComboBox<Integer> firstYearSelection;
+  private JComboBox<Integer> lastYearSelection;
+  private JComboBox<String> statisticSelection;
 
   public OperationsView(IViewListener controller, Config config) {
-    super(config.getString(Config.APP_NAME));
+    super(config.getString(Config.APP_NAME) + " " + config.getString(Config.APP_VERSION));
+    this.config = config;
     this.controller = controller;
 
     createMainWindow();
   }
 
   private void createMainWindow()  {
-    setLayout(new BorderLayout(0, 10));
+    setLayout(new BorderLayout(0, Config.VERTICAL_GAP_MENU));
+    setIconImage(config.getIcon(Config.APP_ICON).getImage());
 
     JPanel northPane = new JPanel();
-    northPane.setLayout(new GridLayout(1,1));
+    northPane.setLayout(new GridLayout(1,Config.MENU_ITEMS));
     createMenuBar(northPane);
 
     JPanel centerPane = new JPanel();
-    centerPane.setLayout(new BorderLayout());
     createStatisticSelection(centerPane);
 
     chartPane = new JPanel();
-    centerPane.add(chartPane, BorderLayout.CENTER);
+    chartPane.setBorder(BorderFactory.createBevelBorder(1));
+    chartPane.setVisible(false);
+    centerPane.add(chartPane);
+
+    stateStatus = new JLabel(Config.INITIAL_STATE);
 
     add(northPane, BorderLayout.NORTH);
     add(centerPane, BorderLayout.CENTER);
+    add(stateStatus, BorderLayout.SOUTH);
 
-    setSize(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+    setExtendedState(JFrame.MAXIMIZED_BOTH);
+    setSize(Config.screenDimension);
     setResizable(true);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -87,29 +95,60 @@ public class OperationsView extends JFrame implements ActionListener {
     panel.add(menuBar);
   }
 
+  private JButton createButton(String label, boolean enable) {
+    JButton button = new JButton(label);
+    button.setPreferredSize(new Dimension(Config.W_BUTTON, Config.H_BUTTON));
+    button.addActionListener(this);
+    button.setActionCommand(label);
+    button.setEnabled(enable);
+
+    return button;
+  }
+
+  private void addStatistics() {
+    for (StatisticType statisticType: StatisticType.values()) {
+      statisticSelection.addItem(statisticType.toString());
+    }
+
+    statisticSelection.addItemListener(e -> {
+      if (StatisticType.getStatisticType((String) e.getItem()) != StatisticType.SCHENGEN) {
+        lastYearSelection.setVisible(true);
+      } else {
+        lastYearSelection.setVisible(false);
+      }
+    });
+  }
+
   private void createStatisticSelection(JPanel panel) {
-    statisticSelectionPane = new JPanel();
-    statisticSelectionPane.setLayout(new FlowLayout(FlowLayout.RIGHT, 25, 0));
+    statisticPane = new JPanel();
+    statisticPane.setLayout(new FlowLayout(FlowLayout.RIGHT, Config.H_GAP_STATISTIC_PANE, Config.V_GAP_STATISTIC_PANE));
 
-    statisticComboBox = new JComboBox();
-    firstYearComboBox = new JComboBox();
-    secondYearComboBox = new JComboBox();
-    statisticSelectionPane.add(statisticComboBox);
-    statisticSelectionPane.add(firstYearComboBox);
-    statisticSelectionPane.add(secondYearComboBox);
+    statisticSelection = new JComboBox<>();
+    firstYearSelection = new JComboBox<>();
+    lastYearSelection = new JComboBox<>();
+    statisticPane.add(statisticSelection);
+    statisticPane.add(firstYearSelection);
+    statisticPane.add(lastYearSelection);
 
-    JButton acceptStatisticButton = new JButton(Config.ACCEPT_STATISTIC_BUTTON);
-    acceptStatisticButton.setPreferredSize(new Dimension(80, 40));
-    acceptStatisticButton.addActionListener(this);
-    acceptStatisticButton.setActionCommand(Config.ACCEPT_STATISTIC_BUTTON);
-    statisticSelectionPane.add(acceptStatisticButton);
+    addStatistics();
+    statisticPane.add(createButton(Config.ACCEPT_STATISTIC_BUTTON, true));
 
-    statisticSelectionPane.setVisible(false);
-    panel.add(statisticSelectionPane, BorderLayout.NORTH);
+    statisticPane.setVisible(false);
+    panel.add(statisticPane);
+  }
+
+  public void showDialogMessage(String message) {
+    JOptionPane.showMessageDialog(this, message, config.getString(Config.APP_NAME) + " " +
+                                  config.getString(Config.APP_VERSION), JOptionPane.INFORMATION_MESSAGE,
+                                  config.getIcon(Config.ALERT_ICON));
+  }
+
+  public void setStateStatus(String message) {
+    stateStatus.setText(message);
   }
 
   public String selectFile() {
-    int result = -1;
+    int result;
     String filePath = null;
 
     JFileChooser fileChooser = new JFileChooser(new File("."));
@@ -127,25 +166,21 @@ public class OperationsView extends JFrame implements ActionListener {
   }
 
   public void initStatisticSelection(OperationsStatistics operationsStatistics) {
-    for (StatisticType statisticType: StatisticType.values()) {
-      statisticComboBox.addItem(statisticType.toString());
+    List<Integer> years = operationsStatistics.getDifferentYears();
+    for (int year: years) {
+      firstYearSelection.addItem(year);
+      lastYearSelection.addItem(year);
     }
 
-    statisticComboBox.addItemListener(e -> {
-      if (StatisticType.getStatisticType((String) e.getItem()) != StatisticType.SCHENGEN) {
-        secondYearComboBox.setVisible(true);
-      } else {
-        secondYearComboBox.setVisible(false);
+    firstYearSelection.addItemListener(e -> {
+      lastYearSelection.removeAllItems();
+      for (int year: getYearsAfter((int) e.getItem(), years.get(years.size() - 1))) {
+        lastYearSelection.addItem(year);
       }
     });
 
-    for (int year: operationsStatistics.getDifferentYears()) {
-      firstYearComboBox.addItem(year);
-      secondYearComboBox.addItem(year);
-    }
-
-    secondYearComboBox.setVisible(false);
-    statisticSelectionPane.setVisible(true);
+    lastYearSelection.setVisible(false);
+    statisticPane.setVisible(true);
   }
 
   public void initChartView(Chart chart) {
@@ -156,19 +191,31 @@ public class OperationsView extends JFrame implements ActionListener {
       chartPane.add(chartWrapper);
 
       chartPane.revalidate();
+      chartPane.setVisible(true);
     });
   }
 
-  private Tuple<Tuple<Integer, Integer>, StatisticType> readStatisticSelection() {
-    return new Tuple(StatisticType.getStatisticType((String) statisticComboBox.getSelectedItem()),
-      new Tuple(firstYearComboBox.getSelectedItem(), secondYearComboBox.getSelectedItem()));
+  private List<Integer> getYearsAfter(int firstYear, int lastYear) {
+    List <Integer> years = new ArrayList<>();
+
+    while (firstYear <= lastYear) {
+      years.add(firstYear++);
+    }
+
+    return years;
+  }
+
+  private Tuple<StatisticType, List<Integer>> readStatisticSelection() {
+    return new Tuple<>(StatisticType.getStatisticType((String) statisticSelection.getSelectedItem()),
+                       getYearsAfter((int) firstYearSelection.getSelectedItem(),
+                                     (int) lastYearSelection.getSelectedItem()));
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
     switch (e.getActionCommand()) {
       case Config.OPEN_MENU_ITEM -> controller.eventFired(IViewListener.Event.OPEN, null);
-      case Config.ACCEPT_STATISTIC_BUTTON -> controller.eventFired(IViewListener.Event.ACCEPT_STATISTIC,
+      case Config.ACCEPT_STATISTIC_BUTTON -> controller.eventFired(IViewListener.Event.GENERATE_CHART,
                                                                    readStatisticSelection());
     }
   }

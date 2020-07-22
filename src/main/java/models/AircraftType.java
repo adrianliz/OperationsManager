@@ -5,8 +5,7 @@ public enum AircraftType {
   JET("JET"),
   HELICOPTEROS("HELICÓPTEROS"),
   ESTADO("AERONAVES DE ESTADO"),
-  GENERAL("AVIACIÓN GENERAL"),
-  DESCONOCIDO("DESCONOCIDO");
+  GENERAL("AVIACIÓN GENERAL");
 
   private final String aircraftType;
 

@@ -1,5 +1,6 @@
 package controllers;
 
+import com.poiji.exception.InvalidExcelFileExtension;
 import mdlaf.MaterialLookAndFeel;
 import mdlaf.themes.JMarsDarkTheme;
 import models.Operation;
@@ -11,6 +12,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import views.OperationsView;
 
 import javax.swing.*;
+import java.util.List;
 
 public class OperationsManager implements IViewListener {
   private OperationsView view;
@@ -18,7 +20,7 @@ public class OperationsManager implements IViewListener {
   private OperationsStatistics operationsStatistics;
   private ChartFactory chartFactory;
 
-  private OperationsManager() throws ConfigurationException {
+  OperationsManager() throws ConfigurationException {
     config = new Config();
     view = new OperationsView(this, config);
     chartFactory = new ChartFactory();
@@ -28,25 +30,37 @@ public class OperationsManager implements IViewListener {
     String filePath = view.selectFile();
 
     if (filePath != null) {
-      OperationsReader operationsReader = new OperationsReader(filePath, config);
-      operationsStatistics = new OperationsStatistics(operationsReader.getOperations());
+      try {
+        OperationsReader operationsReader = new OperationsReader(filePath, config);
+        List<Operation> operations = operationsReader.getOperations();
 
-      view.initStatisticSelection(operationsStatistics);
+        if (operations.isEmpty()) {
+          view.showDialogMessage(Config.OP_NOT_FOUND);
+        } else {
+          operationsStatistics = new OperationsStatistics(operations);
+
+          view.setStateStatus(Config.OP_READED);
+          view.initStatisticSelection(operationsStatistics);
+        }
+      } catch (InvalidExcelFileExtension e) {
+        view.showDialogMessage(Config.FILE_EXT_ERROR);
+      }
     }
   }
 
-  private void generateChart(StatisticType statisticType, Tuple<Integer, Integer> years) {
+  private void generateChart(StatisticType statisticType, List<Integer> years) {
     IChart chart = chartFactory.newChart(statisticType);
     view.initChartView(chart.createChart(operationsStatistics, years));
+    view.setStateStatus("");
   }
 
   @Override
   public void eventFired(Event event, Object o) {
     switch (event) {
       case OPEN -> openFile();
-      case ACCEPT_STATISTIC -> {
+      case GENERATE_CHART -> {
         Tuple tuple = (Tuple) o;
-        generateChart((StatisticType) tuple.a, (Tuple<Integer, Integer>) tuple.b);
+        generateChart((StatisticType) tuple.a, (List<Integer>) tuple.b);
       }
     }
   }
@@ -56,10 +70,12 @@ public class OperationsManager implements IViewListener {
         try {
           UIManager.setLookAndFeel(new MaterialLookAndFeel(new JMarsDarkTheme()));
           new OperationsManager();
-        } catch (UnsupportedLookAndFeelException | ConfigurationException e) {
-          e.printStackTrace();
+        } catch (UnsupportedLookAndFeelException e) {
+          System.err.println(Config.LAF_ERROR); //TODO logger
+        } catch (ConfigurationException e) {
+          System.err.println(Config.CONFIG_ERROR);
+          System.exit(1);
         }
-      }
-    );
+    });
   }
 }

@@ -16,6 +16,14 @@
     <mainClass>controllers.OperationsManager</mainClass>
   </properties>
 
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources/img</directory>
+      </resource>
+    </resources>
+  </build>
+
   <profiles>
     <profile> <!-- Dev profile -->
       <id>dev</id>

@@ -2,33 +2,35 @@ package models.charts;
 
 import controllers.Config;
 import models.OperationsStatistics;
-import models.Tuple;
 import org.knowm.xchart.PieChart;
 import org.knowm.xchart.PieChartBuilder;
-import org.knowm.xchart.PieSeries;
 import org.knowm.xchart.internal.chartpart.Chart;
 import org.knowm.xchart.style.PieStyler;
 
+import java.util.List;
+
 public class SchengenChart implements IChart {
   @Override
-  public Chart createChart(OperationsStatistics operationsStatistics, Tuple<Integer, Integer> years) {
+  public Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years) {
     PieChart chart =
       new PieChartBuilder()
-        .width(Config.screenDimension.width - 50)
-        .title(Config.SCHENGEN_CHART_TITLE)
+        .width(Config.screenDimension.width - 100)
+        .title(Config.SCHENGEN_CHART)
         .build();
 
-    int schengenOperations = operationsStatistics.getSchengenOperations(years.a);
+    int schengenOperations = operationsStatistics.getSchengenOperations(years.get(0));
 
-    chart.getStyler().setAnnotationType(PieStyler.AnnotationType.LabelAndValue);
-    chart.getStyler().setAnnotationDistance(.82);
-    chart.getStyler().setPlotContentSize(.9);
-    chart.getStyler().setDefaultSeriesRenderStyle(PieSeries.PieSeriesRenderStyle.Pie);
-    chart.getStyler().setDecimalPattern("#");
-    chart.getStyler().setSumVisible(true);
-    chart.getStyler().setSumFontSize(20f);
-    chart.addSeries("SCHENGEN", schengenOperations);
-    chart.addSeries("NO SCHENGEN", operationsStatistics.getOperationsCount(years.a) - schengenOperations);
+    PieStyler pieStyler = chart.getStyler();
+    pieStyler.setLegendVisible(true);
+    pieStyler.setDrawAllAnnotations(true);
+    pieStyler.setAnnotationType(PieStyler.AnnotationType.LabelAndPercentage);
+    pieStyler.setAnnotationDistance(1.15);
+    pieStyler.setPlotContentSize(.8);
+    pieStyler.setStartAngleInDegrees(90);
+
+    chart.addSeries(Config.SCHENGEN_SERIES, schengenOperations);
+    chart.addSeries(Config.NO_SCHENGEN_SERIES,
+              operationsStatistics.getOperationsCount(years.get(0)) - schengenOperations);
 
     return chart;
   }
