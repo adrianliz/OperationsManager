@@ -16,7 +16,9 @@ import views.OperationsView;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OperationsManager implements IViewListener {
   private static final Logger LOG = LogManager.getLogger(OperationsManager.class);
@@ -25,35 +27,37 @@ public class OperationsManager implements IViewListener {
   private Config config;
   private OperationsStatistics operationsStatistics;
   private ChartFactory chartFactory;
-  private Chart chart;
+  private Map<Tuple<StatisticType, List<Integer>>, Chart> statisticsCharts;
+  private Chart currentChart;
 
   OperationsManager(Config config) {
     this.config = config;
     view = new OperationsView(this, config);
     chartFactory = new ChartFactory();
 
-    openFile();
+    readOperations();
   }
 
-  private void openFile() {
+  private void readOperations() {
     String filePath = view.selectFilePath(OperationsView.FILE_ACTION.OPEN);
 
     if (filePath != null) {
       try {
         OperationsReader operationsReader = new OperationsReader(filePath, config);
-        List<Operation> operations = operationsReader.getOperations();
+        List<Operation> operations = operationsReader.readOperations();
 
         if (operations.isEmpty()) {
           view.showDialogMessage(config.getString(Config.OPERATIONS_NOT_FOUND), config.getIcon(Config.ALERT_ICON));
         } else {
+          statisticsCharts = new HashMap<>();
           operationsStatistics = new OperationsStatistics(operations);
 
           view.disableChartPane();
           view.enableEvent(Event.SAVE_CHART, false);
-          view.setStateStatus(config.getString(Config.FILE_SELECTED_STATE) + " " + filePath);
+          view.setStateStatus(config.getString(Config.OPERATIONS_READ_STATE) + " " + filePath);
           view.initStatisticSelection(operationsStatistics);
 
-          LOG.info(config.getString(Config.FILE_OPEN_LOG) + " " + filePath);
+          LOG.info(config.getString(Config.OPERATIONS_READ_LOG) + " " + filePath);
         }
       } catch (InvalidExcelFileExtension e) {
         view.showDialogMessage(config.getString(Config.FILE_EXT_ERROR), config.getIcon(Config.ALERT_ICON));
@@ -62,20 +66,27 @@ public class OperationsManager implements IViewListener {
   }
 
   private void generateChart(StatisticType statisticType, List<Integer> years) {
-    IStatisticChart statisticChart = chartFactory.newChart(statisticType);
+    IStatisticChart statisticModel = chartFactory.newChart(statisticType);
 
-    chart = statisticChart.createChart(operationsStatistics, years, config);
-    view.initChartView(chart);
+    currentChart = statisticsCharts.get(new Tuple(statisticType, years));
+
+    if (currentChart == null) {
+      currentChart = statisticModel.createChart(operationsStatistics, years, config);
+      statisticsCharts.put(new Tuple(statisticType, years), currentChart);
+    }
+
+    view.initChartView(currentChart);
     view.enableEvent(Event.SAVE_CHART, true);
 
-    LOG.info(config.getString(Config.CHART_GENERATED_LOG) + " " + chart.getTitle());
+    LOG.info(config.getString(Config.CHART_GENERATED_LOG) + " " + currentChart.getTitle());
   }
 
   private void saveChart() {
     String filePath = view.selectFilePath(OperationsView.FILE_ACTION.SAVE);
 
     try {
-      BitmapEncoder.saveBitmapWithDPI(chart, filePath, BitmapEncoder.BitmapFormat.PNG, config.getInt(Config.PNG_PDI));
+      BitmapEncoder.saveBitmapWithDPI(currentChart, filePath,
+                                      BitmapEncoder.BitmapFormat.PNG, config.getInt(Config.PNG_PDI));
       view.showDialogMessage(config.getString(Config.CHART_SAVED), config.getIcon(Config.SUCCESS_ICON));
 
       LOG.info(config.getString(Config.CHART_SAVED_LOG) + " " + filePath);
@@ -88,7 +99,7 @@ public class OperationsManager implements IViewListener {
   @Override
   public void eventFired(Event event, Object o) {
     switch (event) {
-      case OPEN -> openFile();
+      case OPEN -> readOperations();
       case GENERATE_CHART -> {
         Tuple tuple = (Tuple) o;
         generateChart((StatisticType) tuple.a, (List<Integer>) tuple.b);

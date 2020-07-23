@@ -51,8 +51,12 @@ public class OperationsStatistics {
     int operationsCount = 0;
 
     for (Operation operation: getOperationsIn(year)) {
-      if (operation.getAircraftType().equals(aircraftType)) {
-        operationsCount++;
+      AircraftType operationAircraft = operation.getAircraftType();
+
+      if (operationAircraft != null) {
+        if (operationAircraft.equals(aircraftType)) {
+          operationsCount++;
+        }
       }
     }
 
@@ -82,14 +86,12 @@ public class OperationsStatistics {
   }
 
   public int getMTOWAverage(int year) {
-    int sum = 0;
-
     List<Operation> operations = getOperationsIn(year);
-
     if (operations.isEmpty()) {
       return 0;
     }
 
+    int sum = 0;
     for (Operation operation: operations) {
       sum += operation.getAircraftMTOW();
     }

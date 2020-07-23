@@ -2,6 +2,8 @@ package models.charts;
 
 import controllers.Config;
 import models.OperationsStatistics;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
 import org.knowm.xchart.internal.chartpart.Chart;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MTOWStaticChart implements IStatisticChart {
+  private static final Logger LOG = LogManager.getLogger(MTOWStaticChart.class);
 
   @Override
   public Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years, Config config) {
@@ -22,11 +25,14 @@ public class MTOWStaticChart implements IStatisticChart {
         .yAxisTitle(config.getString(Config.Y_MTOW_SERIES))
         .build();
 
+    LOG.info(config.getString(Config.GENERATING_CHART_LOG) + " " + chart.getTitle());
+
     CategoryStyler styler = chart.getStyler();
     styler.setChartTitleVisible(true);
-    chart.getStyler().setAvailableSpaceFill(.20);
-    styler.setLegendPosition(Styler.LegendPosition.InsideNW);
     styler.setHasAnnotations(true);
+    styler.setToolTipsEnabled(true);
+    styler.setLegendPosition(Styler.LegendPosition.InsideNW);
+    styler.setAvailableSpaceFill(.20);
 
     List<Integer> yData = new ArrayList<>();
     for (int year: years) {

@@ -44,11 +44,13 @@ public class Config {
   public static final String PNG_PDI = "PNG_PDI";
 
   public static final String INITIAL_STATE = "INITIAL_STATE";
-  public static final String FILE_SELECTED_STATE = "FILE_SELECTED_STATE";
+  public static final String OPERATIONS_READ_STATE = "OPERATIONS_READ_STATE";
 
-  /* MESSAGES */
+  /* MESSAGES CONFIG */
   public static final String CHART_SAVED = "CHART_SAVED";
-  public static final String FILE_OPEN_LOG = "FILE_OPEN_LOG";
+
+  public static final String OPERATIONS_READ_LOG = "OPERATIONS_READ_LOG";
+  public static final String GENERATING_CHART_LOG = "GENERATING_CHART_LOG";
   public static final String CHART_GENERATED_LOG = "CHART_GENERATED_LOG";
   public static final String CHART_SAVED_LOG = "CHART_SAVED_lOG";
 

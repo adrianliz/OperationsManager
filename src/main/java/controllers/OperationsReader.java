@@ -29,7 +29,7 @@ public class OperationsReader {
     return Poiji.fromExcel(new File(filePath), Operation.class, options);
   }
 
-  List<Operation> getOperations() {
+  List<Operation> readOperations() {
     List<Operation> operations = new ArrayList<>();
 
     operations.addAll(readSheet(config.getInt(Config.LANDINGS_SHEET)));

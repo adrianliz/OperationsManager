@@ -199,6 +199,9 @@ public class OperationsView extends JFrame implements ActionListener {
 
   public void initStatisticSelection(OperationsStatistics operationsStatistics) {
     List<Integer> years = operationsStatistics.getDifferentYears();
+    firstYearSelection.removeAllItems();
+    lastYearSelection.removeAllItems();
+
     for (int year: years) {
       firstYearSelection.addItem(year);
       lastYearSelection.addItem(year);

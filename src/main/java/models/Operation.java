@@ -15,14 +15,8 @@ public class Operation {
   @ExcelCell(2)
   private String aircraftTypeRaw;
   private AircraftType aircraftType;
-  @ExcelCell(4)
-  private String aircraftModel;
   @ExcelCell(6)
   private double aircraftMTOW; //aircraft max weight at arrival
-  @ExcelCell(7)
-  private String CIA; //operation company
-  @ExcelCell(8)
-  private String airport;
   @ExcelCellName("SCHENGEN/NO-SCHENGEN")
   private String schengen;
 
@@ -43,23 +37,14 @@ public class Operation {
     return aircraftType;
   }
 
-  public String getAircraftModel() {
-    return aircraftModel;
-  }
-
   public double getAircraftMTOW() {
     return aircraftMTOW;
   }
 
-  public String getCIA() {
-    return CIA;
-  }
-
-  public String getAirport() {
-    return airport;
-  }
-
   public boolean isSchengen() {
-    return schengen.equals(SCHENGEN);
+    if (schengen != null) {
+      return schengen.equals(SCHENGEN);
+    }
+    return false;
   }
 }
