@@ -2,12 +2,11 @@ package models.charts;
 
 import controllers.Config;
 import models.OperationsStatistics;
-import org.knowm.xchart.*;
+import org.knowm.xchart.CategoryChart;
+import org.knowm.xchart.CategoryChartBuilder;
 import org.knowm.xchart.internal.chartpart.Chart;
 import org.knowm.xchart.style.CategoryStyler;
-import org.knowm.xchart.style.PieStyler;
 import org.knowm.xchart.style.Styler;
-import org.knowm.xchart.style.XYStyler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +14,12 @@ import java.util.List;
 public class MTOWStaticChart implements IStatisticChart {
 
   @Override
-  public Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years) {
+  public Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years, Config config) {
     CategoryChart chart =
       new CategoryChartBuilder()
-        .title(Config.MTOW_CHART)
-        .xAxisTitle(Config.X_MTOW)
-        .yAxisTitle(Config.Y_MTOW)
+        .title(config.getString(Config.MTOW_CHART_TITLE))
+        .xAxisTitle(config.getString(Config.X_MTOW_SERIES))
+        .yAxisTitle(config.getString(Config.Y_MTOW_SERIES))
         .build();
 
     CategoryStyler styler = chart.getStyler();
@@ -34,7 +33,7 @@ public class MTOWStaticChart implements IStatisticChart {
       yData.add(operationsStatistics.getMTOWAverage(year));
     }
 
-    chart.addSeries(Config.MTOW_CHART, years, yData);
+    chart.addSeries(config.getString(Config.MTOW_CHART_TITLE), years, yData);
     return chart;
   }
 }

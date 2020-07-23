@@ -11,12 +11,12 @@ import java.util.List;
 
 public class AircraftTypeStatisticChart implements IStatisticChart {
   @Override
-  public Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years) {
+  public Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years, Config config) {
     CategoryChart chart =
       new CategoryChartBuilder()
-        .title(Config.AIRCRAFT_TYPE_CHART)
-        .xAxisTitle(Config.X_AIRCRAFT_TYPE)
-        .yAxisTitle(Config.Y_AIRCRAFT_TYPE)
+        .title(config.getString(Config.AIRCRAFT_TYPE_CHART_TITLE))
+        .xAxisTitle(config.getString(Config.X_AIRCRAFT_TYPE_SERIES))
+        .yAxisTitle(config.getString(Config.Y_AIRCRAFT_TYPE_SERIES))
         .build();
 
     for (AircraftType aircraftType: AircraftType.values()) {

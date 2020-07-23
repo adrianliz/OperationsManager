@@ -1,62 +1,72 @@
 package controllers;
 
-import java.awt.*;
-import java.io.File;
-
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import javax.swing.*;
+import java.io.File;
 
 public class Config {
   private static final String CONFIG_FILE = "config.properties";
+  public static final String READ_CONFIG_ERROR = "No se pudo leer el fichero de configuración";
 
-  /* Dinamic config */
+  /* APP CONFIG */
   public static final String APP_NAME = "APP_NAME";
   public static final String APP_VERSION = "APP_VERSION";
   public static final String APP_ICON = "APP_ICON";
   public static final String ALERT_ICON = "ALERT_ICON";
-  public static final String HEADER_START = "HEADER_START";
+  public static final String SUCCESS_ICON = "SUCCESS_ICON";
+
+  /* EXCEL CONFIG */
+  public static final String EXCEL_HEADER_ROW = "EXCEL_HEADER_ROW";
+  public static final String EXCEL_DATE_FORMAT_INDEX = "EXCEL_DATE_FORMAT_INDEX";
   public static final String LANDINGS_SHEET = "LANDINGS_SHEET";
   public static final String DEPARTURES_SHEET = "DEPARTURES_SHEET";
-  public static final String DATE_FORMAT = "DATE_FORMAT";
+  public static final String EXCEL_DATE_FORMAT = "EXCEL_DATE_FORMAT";
 
-  /* Static config */
-  public static final int DATE_FORMAT_INDEX = 14;
-  public static final String SCHENGEN = "SCHENGEN";
+  /* VIEW CONFIG */
+  public static final String MINIMUM_WINDOW_WIDTH = "MINIMUM_WINDOW_WIDTH";
+  public static final String MINIMUM_WINDOW_HEIGHT = "MINIMUM_WINDOW_HEIGHT";
+  public static final String VERTICAL_GAP_MENU_BAR = "VERTICAL_GAP_MENU_BAR";
+  public static final String MENU_BAR_ITEMS = "MENU_BAR_ITEMS";
+  public static final String HORIZONTAL_GAP_STATISTIC_PANE = "HORIZONTAL_GAP_STATISTIC_PANE";
 
-  /* View */
-  public static final int MINIMUM_WINDOW_W = 800;
-  public static final int MINIMUM_WINDOW_H = 800;
-  public static final int VERTICAL_GAP_MENU = 10;
-  public static final int MENU_ITEMS = 1;
-  public static final int H_GAP_STATISTIC_PANE = 25;
+  public static final String FILE_MENU = "FILE_MENU";
+  public static final String OPEN_FILE_MENU_ITEM = "OPEN_FILE_MENU_ITEM";
+  public static final String SAVE_CHART_MENU_ITEM = "SAVE_CHART_MENU_ITEM";
+  public static final String ACCEPT_STATISTIC_BUTTON = "ACCEPT_STATISTIC_BUTTON";
 
-  public static final String FILE_MENU = "Fichero";
-  public static final String OPEN_MENU_ITEM = "Abrir...";
-  public static final String ACCEPT_STATISTIC_BUTTON = "OK";
+  public static final String EXCEL_DESC = "EXCEL_DESC";
+  public static final String PNG_DESC = "PNG_DESC";
+  public static final String EXCEL_EXT = "EXCEL_EXT";
+  public static final String PNG_EXT = "PNG_EXT";
+  public static final String PNG_PDI = "PNG_PDI";
 
-  public static final String EXCEL_DESC = "Excel file";
-  public static final String EXCEL_EXT = "xlsx";
+  public static final String INITIAL_STATE = "INITIAL_STATE";
+  public static final String FILE_SELECTED_STATE = "FILE_SELECTED_STATE";
 
-  public static final String SCHENGEN_CHART = "Operaciones Schengen";
-  public static final String SCHENGEN_SERIES = "Schengen";
-  public static final String NO_SCHENGEN_SERIES = "No schengen";
-  public static final String AIRCRAFT_TYPE_CHART = "Tipos de aeronaves";
-  public static final String X_AIRCRAFT_TYPE = "Año";
-  public static final String Y_AIRCRAFT_TYPE = "Total";
-  public static final String MTOW_CHART = "Media MTOW";
-  public static final String X_MTOW = "Año";
-  public static final String Y_MTOW = "Media";
+  /* MESSAGES */
+  public static final String CHART_SAVED = "CHART_SAVED";
+  public static final String FILE_OPEN_LOG = "FILE_OPEN_LOG";
+  public static final String CHART_GENERATED_LOG = "CHART_GENERATED_LOG";
+  public static final String CHART_SAVED_LOG = "CHART_SAVED_lOG";
 
-  public static final String INITIAL_STATE = "Abre un nuevo fichero de operaciones";
-  public static final String FILE_STATE = "Fichero:";
+  public static final String LAF_ERROR = "LAF_ERROR";
+  public static final String FILE_EXT_ERROR = "FILE_EXT_ERROR";
+  public static final String OPERATIONS_NOT_FOUND = "OPERATIONS_NOT_FOUND";
+  public static final String SAVE_CHART_ERROR = "SAVE_CHART_ERROR";
 
-  public static final String LAF_ERROR = "No se pudo aplicar el LAF";
-  public static final String CONFIG_ERROR = "No se pudo leer el fichero de configuración";
-  public static final String FILE_EXT_ERROR = "Extensión de fichero inválida";
-  public static final String OP_NOT_FOUND = "No se han encontrado operaciones";
+  /* CHARTS CONFIG */
+  public static final String SCHENGEN_CHART_TITLE = "SCHENGEN_CHART_TITLE";
+  public static final String SCHENGEN_SERIES = "SCHENGEN_SERIES";
+  public static final String NO_SCHENGEN_SERIES = "NO_SCHENGEN_SERIES";
+  public static final String AIRCRAFT_TYPE_CHART_TITLE = "AIRCRAFT_TYPE_CHART_TITLE";
+  public static final String X_AIRCRAFT_TYPE_SERIES = "X_AIRCRAFT_TYPE_SERIES";
+  public static final String Y_AIRCRAFT_TYPE_SERIES = "Y_AIRCRAFT_TYPE_SERIES";
+  public static final String MTOW_CHART_TITLE = "MTOW_CHART_TITLE";
+  public static final String X_MTOW_SERIES = "X_MTOW_SERIES";
+  public static final String Y_MTOW_SERIES = "Y_MTOW_SERIES";
 
   private Configuration config;
 

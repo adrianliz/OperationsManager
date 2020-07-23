@@ -85,10 +85,14 @@ public class OperationsStatistics {
     int sum = 0;
 
     List<Operation> operations = getOperationsIn(year);
+
+    if (operations.isEmpty()) {
+      return 0;
+    }
+
     for (Operation operation: operations) {
       sum += operation.getAircraftMTOW();
     }
-
     return sum / operations.size();
   }
 }

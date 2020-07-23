@@ -2,12 +2,13 @@ package models;
 
 import com.poiji.annotation.ExcelCell;
 import com.poiji.annotation.ExcelCellName;
-import controllers.Config;
 
 import java.util.Calendar;
 import java.util.Date;
 
 public class Operation {
+  private static final String SCHENGEN = "SCHENGEN";
+
   @ExcelCell(3)
   private Date dateRaw;
   private Calendar date;
@@ -59,6 +60,6 @@ public class Operation {
   }
 
   public boolean isSchengen() {
-    return schengen.equals(Config.SCHENGEN);
+    return schengen.equals(SCHENGEN);
   }
 }

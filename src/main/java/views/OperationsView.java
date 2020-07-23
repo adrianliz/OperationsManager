@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OperationsView extends JFrame implements ActionListener {
+  public enum FILE_ACTION {OPEN, SAVE}
+
   private final IViewListener controller;
   private final Config config;
 
@@ -27,6 +29,7 @@ public class OperationsView extends JFrame implements ActionListener {
   private JComboBox<Integer> firstYearSelection;
   private JComboBox<Integer> lastYearSelection;
   private JComboBox<String> statisticSelection;
+  private JMenuItem saveChart;
 
   public OperationsView(IViewListener controller, Config config) {
     super(config.getString(Config.APP_NAME) + " " + config.getString(Config.APP_VERSION));
@@ -37,11 +40,11 @@ public class OperationsView extends JFrame implements ActionListener {
   }
 
   private void createMainWindow()  {
-    setLayout(new BorderLayout(0, Config.VERTICAL_GAP_MENU));
+    setLayout(new BorderLayout(0, config.getInt(Config.VERTICAL_GAP_MENU_BAR)));
     setIconImage(config.getIcon(Config.APP_ICON).getImage());
 
     JPanel northPane = new JPanel();
-    northPane.setLayout(new GridLayout(1,Config.MENU_ITEMS));
+    northPane.setLayout(new GridLayout(1, config.getInt(Config.MENU_BAR_ITEMS)));
     createMenuBar(northPane);
 
     JPanel centerPane = new JPanel();
@@ -54,7 +57,7 @@ public class OperationsView extends JFrame implements ActionListener {
     chartPane.setVisible(false);
     centerPane.add(chartPane);
 
-    stateStatus = new JLabel(Config.INITIAL_STATE);
+    stateStatus = new JLabel(config.getString(Config.INITIAL_STATE));
 
     add(northPane, BorderLayout.NORTH);
     add(centerPane, BorderLayout.CENTER);
@@ -62,7 +65,8 @@ public class OperationsView extends JFrame implements ActionListener {
 
     setExtendedState(JFrame.MAXIMIZED_BOTH);
     setSize(getEffectiveScreenSize());
-    setMinimumSize(new Dimension(Config.MINIMUM_WINDOW_W, Config.MINIMUM_WINDOW_H));
+    setMinimumSize(new Dimension(config.getInt(Config.MINIMUM_WINDOW_WIDTH),
+                                 config.getInt(Config.MINIMUM_WINDOW_HEIGHT)));
     setLocationRelativeTo(null);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     setVisible(true);
@@ -78,7 +82,7 @@ public class OperationsView extends JFrame implements ActionListener {
   }
 
   private JMenuItem createMenuItem(String label, boolean enable) {
-    JMenuItem menuItem = new JMenuItem(label, label.charAt(0));
+    JMenuItem menuItem = new JMenuItem(config.getString(label), config.getString(label).charAt(0));
 
     menuItem.addActionListener(this);
     menuItem.setActionCommand(label);
@@ -93,7 +97,11 @@ public class OperationsView extends JFrame implements ActionListener {
 
   private JMenu createFileMenu(String label) {
     JMenu fileMenu = new JMenu(label);
-    fileMenu.add(createMenuItem(Config.OPEN_MENU_ITEM));
+    fileMenu.add(createMenuItem(Config.OPEN_FILE_MENU_ITEM));
+    fileMenu.addSeparator();
+
+    saveChart = createMenuItem(Config.SAVE_CHART_MENU_ITEM, false);
+    fileMenu.add(saveChart);
 
     return fileMenu;
   }
@@ -101,18 +109,22 @@ public class OperationsView extends JFrame implements ActionListener {
   private void createMenuBar(JPanel panel) {
     JMenuBar menuBar = new JMenuBar();
 
-    menuBar.add(createFileMenu(Config.FILE_MENU));
+    menuBar.add(createFileMenu(config.getString(Config.FILE_MENU)));
 
     panel.add(menuBar);
   }
 
   private JButton createButton(String label, boolean enable) {
-    JButton button = new JButton(label);
+    JButton button = new JButton(config.getString(label));
     button.addActionListener(this);
     button.setActionCommand(label);
     button.setEnabled(enable);
 
     return button;
+  }
+
+  private JButton createButton(String label) {
+    return createButton(label, true);
   }
 
   private void addStatistics() {
@@ -131,7 +143,7 @@ public class OperationsView extends JFrame implements ActionListener {
 
   private void createStatisticSelection(JPanel panel) {
     statisticPane = new JPanel();
-    statisticPane.setLayout(new FlowLayout(FlowLayout.CENTER, Config.H_GAP_STATISTIC_PANE, 0));
+    statisticPane.setLayout(new FlowLayout(FlowLayout.CENTER, config.getInt(Config.HORIZONTAL_GAP_STATISTIC_PANE), 0));
 
     statisticSelection = new JComboBox<>();
     firstYearSelection = new JComboBox<>();
@@ -141,32 +153,42 @@ public class OperationsView extends JFrame implements ActionListener {
     statisticPane.add(lastYearSelection);
 
     addStatistics();
-    statisticPane.add(createButton(Config.ACCEPT_STATISTIC_BUTTON, true));
+    statisticPane.add(createButton(Config.ACCEPT_STATISTIC_BUTTON));
 
     statisticPane.setVisible(false);
     panel.add(statisticPane);
   }
 
-  public void showDialogMessage(String message) {
-    JOptionPane.showMessageDialog(this, message, config.getString(Config.APP_NAME) + " " +
-                                  config.getString(Config.APP_VERSION), JOptionPane.INFORMATION_MESSAGE,
-                                  config.getIcon(Config.ALERT_ICON));
+  public void showDialogMessage(String message, ImageIcon icon) {
+      JOptionPane.showMessageDialog(this, message, config.getString(Config.APP_NAME) + " " +
+                                    config.getString(Config.APP_VERSION), JOptionPane.INFORMATION_MESSAGE, icon);
   }
 
   public void setStateStatus(String message) {
     stateStatus.setText(message);
   }
 
-  public String selectFile() {
-    int result;
+  public String selectFilePath(FILE_ACTION fileAction) {
+    int result = -1;
     String filePath = null;
 
     JFileChooser fileChooser = new JFileChooser(new File("."));
-    FileNameExtensionFilter filter =
-      new FileNameExtensionFilter(Config.EXCEL_DESC, Config.EXCEL_EXT); //TODO config
+    FileNameExtensionFilter filter;
 
-    fileChooser.setFileFilter(filter);
-    result = fileChooser.showOpenDialog(this);
+    switch (fileAction) {
+      case OPEN -> {
+        filter = new FileNameExtensionFilter(config.getString(Config.EXCEL_DESC), config.getString(Config.EXCEL_EXT));
+
+        fileChooser.setFileFilter(filter);
+        result = fileChooser.showOpenDialog(this);
+      }
+      case SAVE -> {
+        filter = new FileNameExtensionFilter(config.getString(Config.PNG_DESC), config.getString(Config.PNG_EXT));
+
+        fileChooser.setFileFilter(filter);
+        result = fileChooser.showSaveDialog(this);
+      }
+    }
 
     if (result == JFileChooser.APPROVE_OPTION) {
       filePath = fileChooser.getSelectedFile().getAbsolutePath();
@@ -225,12 +247,19 @@ public class OperationsView extends JFrame implements ActionListener {
                                      (int) lastYearSelection.getSelectedItem()));
   }
 
+  public void enableEvent(IViewListener.Event event, boolean enable) {
+    switch (event) {
+      case SAVE_CHART -> saveChart.setEnabled(enable);
+    }
+  }
+
   @Override
   public void actionPerformed(ActionEvent e) {
     switch (e.getActionCommand()) {
-      case Config.OPEN_MENU_ITEM -> controller.eventFired(IViewListener.Event.OPEN, null);
+      case Config.OPEN_FILE_MENU_ITEM -> controller.eventFired(IViewListener.Event.OPEN, null);
       case Config.ACCEPT_STATISTIC_BUTTON -> controller.eventFired(IViewListener.Event.GENERATE_CHART,
                                                                    readStatisticSelection());
+      case Config.SAVE_CHART_MENU_ITEM -> controller.eventFired(IViewListener.Event.SAVE_CHART, null);
     }
   }
 }

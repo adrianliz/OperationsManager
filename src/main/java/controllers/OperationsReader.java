@@ -20,9 +20,11 @@ public class OperationsReader {
 
   private List<Operation> readSheet(int sheetIndex) {
     PoijiNumberFormat numberFormat = new PoijiNumberFormat();
-    numberFormat.putNumberFormat((short) Config.DATE_FORMAT_INDEX, config.getString(Config.DATE_FORMAT));
+    numberFormat.putNumberFormat((short) config.getInt(Config.EXCEL_DATE_FORMAT_INDEX),
+                                         config.getString(Config.EXCEL_DATE_FORMAT));
+
     PoijiOptions options = PoijiOptions.PoijiOptionsBuilder.settings().poijiNumberFormat(numberFormat)
-      .headerStart(config.getInt(Config.HEADER_START)).sheetIndex(sheetIndex).build();
+      .headerStart(config.getInt(Config.EXCEL_HEADER_ROW)).sheetIndex(sheetIndex).build();
 
     return Poiji.fromExcel(new File(filePath), Operation.class, options);
   }
