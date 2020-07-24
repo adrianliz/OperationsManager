@@ -259,7 +259,7 @@ public class OperationsView extends JFrame implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e) {
     switch (e.getActionCommand()) {
-      case Config.OPEN_FILE_MENU_ITEM -> controller.eventFired(IViewListener.Event.OPEN, null);
+      case Config.OPEN_FILE_MENU_ITEM -> controller.eventFired(IViewListener.Event.OPEN_FILE, null);
       case Config.ACCEPT_STATISTIC_BUTTON -> controller.eventFired(IViewListener.Event.GENERATE_CHART,
                                                                    readStatisticSelection());
       case Config.SAVE_CHART_MENU_ITEM -> controller.eventFired(IViewListener.Event.SAVE_CHART, null);

@@ -10,7 +10,7 @@
 
     <RollingFile name="rollingFile" fileName="${logPath}/${rollingFileName}.log"
                  filePattern="${logPath}/${rollingFileName}_%d{dd-MM-yyyy}.log">
-      <PatternLayout pattern="%-5level %d{dd MMM yyyy HH:mm:ss} %c - %m%n" />
+      <PatternLayout pattern="[%highlight{%-5level}] %d{dd MMM yyyy HH:mm:ss} %c - %m%n" />
       <Policies>
         <!-- Causes a rollover once the date/time pattern no longer applies to the active file -->
         <TimeBasedTriggeringPolicy interval="1" modulate="true" />

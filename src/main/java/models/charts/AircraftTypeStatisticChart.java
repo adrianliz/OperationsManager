@@ -1,7 +1,6 @@
 package models.charts;
 
 import controllers.Config;
-import controllers.OperationsManager;
 import models.AircraftType;
 import models.OperationsStatistics;
 import org.apache.logging.log4j.LogManager;

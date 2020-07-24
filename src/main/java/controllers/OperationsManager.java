@@ -26,14 +26,14 @@ public class OperationsManager implements IViewListener {
   private OperationsView view;
   private Config config;
   private OperationsStatistics operationsStatistics;
-  private ChartFactory chartFactory;
+  private ChartModelsFactory chartModelsFactory;
   private Map<Tuple<StatisticType, List<Integer>>, Chart> statisticsCharts;
   private Chart currentChart;
 
   OperationsManager(Config config) {
     this.config = config;
     view = new OperationsView(this, config);
-    chartFactory = new ChartFactory();
+    chartModelsFactory = new ChartModelsFactory();
 
     readOperations();
   }
@@ -66,8 +66,7 @@ public class OperationsManager implements IViewListener {
   }
 
   private void generateChart(StatisticType statisticType, List<Integer> years) {
-    IStatisticChart statisticModel = chartFactory.newChart(statisticType);
-
+    IStatisticChart statisticModel = chartModelsFactory.newStatisticModel(statisticType);
     currentChart = statisticsCharts.get(new Tuple(statisticType, years));
 
     if (currentChart == null) {
@@ -99,7 +98,7 @@ public class OperationsManager implements IViewListener {
   @Override
   public void eventFired(Event event, Object o) {
     switch (event) {
-      case OPEN -> readOperations();
+      case OPEN_FILE -> readOperations();
       case GENERATE_CHART -> {
         Tuple tuple = (Tuple) o;
         generateChart((StatisticType) tuple.a, (List<Integer>) tuple.b);

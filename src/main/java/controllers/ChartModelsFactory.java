@@ -6,8 +6,8 @@ import models.charts.IStatisticChart;
 import models.charts.MTOWStaticChart;
 import models.charts.SchengenStatisticChart;
 
-public class ChartFactory {
-  IStatisticChart newChart(StatisticType statisticType) {
+public class ChartModelsFactory {
+  IStatisticChart newStatisticModel(StatisticType statisticType) {
     switch (statisticType) {
       case SCHENGEN -> {
         return new SchengenStatisticChart();

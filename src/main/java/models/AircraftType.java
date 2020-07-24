@@ -8,7 +8,8 @@ public enum AircraftType {
   HELICOPTEROS("HELICÓPTEROS"),
   ESTADO("AERONAVES DE ESTADO"),
   MILITAR("MILITAR"),
-  GENERAL("AVIACIÓN GENERAL");
+  GENERAL("AVIACIÓN GENERAL"),
+  OTRO("OTRO");
 
   private final String aircraftType;
   private final static Pattern granTamanioExp = Pattern.compile(".*GRAN.*");
@@ -24,21 +25,23 @@ public enum AircraftType {
 
   //TODO optimizar
   public static AircraftType getAircraftType(String s) {
-    if (granTamanioExp.matcher(s).matches()) {
-      return GRAN_TAMANIO;
-    } else if (jetExp.matcher(s).matches()) {
-      return JET;
-    } else if (helicopteroExp.matcher(s).matches()) {
-      return HELICOPTEROS;
-    } else if (estadoExp.matcher(s).matches()) {
-      return ESTADO;
-    } else if (militarExp.matcher(s).matches()) {
-      return MILITAR;
-    } else if (generalExp.matcher(s).matches()) {
-      return GENERAL;
+    if (s != null) {
+      if (granTamanioExp.matcher(s).matches()) {
+        return GRAN_TAMANIO;
+      } else if (jetExp.matcher(s).matches()) {
+        return JET;
+      } else if (helicopteroExp.matcher(s).matches()) {
+        return HELICOPTEROS;
+      } else if (estadoExp.matcher(s).matches()) {
+        return ESTADO;
+      } else if (militarExp.matcher(s).matches()) {
+        return MILITAR;
+      } else if (generalExp.matcher(s).matches()) {
+        return GENERAL;
+      }
     }
 
-    return null;
+    return OTRO;
   }
 
   @Override

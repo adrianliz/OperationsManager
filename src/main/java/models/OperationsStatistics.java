@@ -19,8 +19,12 @@ public class OperationsStatistics {
 
     operations = new ArrayList<>();
     for (Operation operation: this.operations) {
-      if (operation.getDate().get(Calendar.YEAR) == year) {
-        operations.add(operation);
+      Calendar date = operation.getDate();
+
+      if (date != null) {
+        if (date.get(Calendar.YEAR) == year) {
+          operations.add(operation);
+        }
       }
     }
 
@@ -32,10 +36,14 @@ public class OperationsStatistics {
     List<Integer> years = new ArrayList<>();
 
     for (Operation operation: operations) {
-      int year = operation.getDate().get(Calendar.YEAR);
+      Calendar date = operation.getDate();
 
-      if (! years.contains(year)) {
-        years.add(year);
+      if (date != null) {
+        int year = date.get(Calendar.YEAR);
+
+        if (! years.contains(year)) {
+          years.add(year);
+        }
       }
     }
 
@@ -93,7 +101,11 @@ public class OperationsStatistics {
 
     int sum = 0;
     for (Operation operation: operations) {
-      sum += operation.getAircraftMTOW();
+      double mtow = operation.getAircraftMTOW();
+
+      if (mtow > 0) {
+        sum += mtow;
+      }
     }
     return sum / operations.size();
   }

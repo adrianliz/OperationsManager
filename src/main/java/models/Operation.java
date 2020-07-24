@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Operation {
-  private static final String SCHENGEN = "SCHENGEN";
+  private enum Schengen {SCHENGEN, NO_SCHENGEN};
 
   @ExcelCell(3)
   private Date dateRaw;
@@ -22,8 +22,10 @@ public class Operation {
 
   public Calendar getDate() {
     if (date == null) {
-      date = Calendar.getInstance();
-      date.setTime(dateRaw);
+      if (dateRaw != null) {
+        date = Calendar.getInstance();
+        date.setTime(dateRaw);
+      }
     }
 
     return date;
@@ -43,7 +45,7 @@ public class Operation {
 
   public boolean isSchengen() {
     if (schengen != null) {
-      return schengen.equals(SCHENGEN);
+      return schengen.equals(Schengen.SCHENGEN.toString());
     }
     return false;
   }
