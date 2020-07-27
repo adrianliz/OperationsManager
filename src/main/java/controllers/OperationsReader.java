@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OperationsReader {
-  private String filePath;
-  private Config config;
+  private final String filePath;
+  private final Config config;
 
   OperationsReader(String filePath, Config config) {
     this.filePath = filePath;

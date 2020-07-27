@@ -23,7 +23,6 @@ public enum AircraftType {
     this.aircraftType = aircraftType;
   }
 
-  //TODO optimizar
   public static AircraftType getAircraftType(String s) {
     if (s != null) {
       if (granTamanioExp.matcher(s).matches()) {

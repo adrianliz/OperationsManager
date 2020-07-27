@@ -1,6 +1,7 @@
 package models.charts;
 
 import controllers.Config;
+import models.Operation;
 import models.OperationsStatistics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,8 +12,8 @@ import org.knowm.xchart.style.PieStyler;
 
 import java.util.List;
 
-public class SchengenStatisticChart implements IStatisticChart {
-  private static final Logger LOG = LogManager.getLogger(MTOWStaticChart.class);
+public class SchengenStatistic implements IStatisticModel {
+  private static final Logger LOG = LogManager.getLogger(MTOWStatistic.class);
 
   @Override
   public Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years, Config config) {
@@ -23,8 +24,6 @@ public class SchengenStatisticChart implements IStatisticChart {
 
     LOG.info(config.getString(Config.GENERATING_CHART_LOG) + " " + chart.getTitle());
 
-    int schengenOperations = operationsStatistics.getSchengenOperations(years.get(0));
-
     PieStyler styler = chart.getStyler();
     styler.setLegendVisible(true);
     styler.setDrawAllAnnotations(true);
@@ -34,9 +33,10 @@ public class SchengenStatisticChart implements IStatisticChart {
     styler.setPlotContentSize(.8);
     styler.setStartAngleInDegrees(90);
 
-    chart.addSeries(config.getString(Config.SCHENGEN_SERIES), schengenOperations);
+    chart.addSeries(config.getString(Config.SCHENGEN_SERIES),
+                    operationsStatistics.getOperationsCount(years.get(0), Operation.Schengen.SCHENGEN));
     chart.addSeries(config.getString(Config.NO_SCHENGEN_SERIES),
-              operationsStatistics.getOperationsCount(years.get(0)) - schengenOperations);
+                    operationsStatistics.getOperationsCount(years.get(0), Operation.Schengen.NO_SCHENGEN));
 
     return chart;
   }

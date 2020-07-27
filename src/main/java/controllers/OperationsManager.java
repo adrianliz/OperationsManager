@@ -6,7 +6,7 @@ import models.Operation;
 import models.OperationsStatistics;
 import models.StatisticType;
 import models.Tuple;
-import models.charts.IStatisticChart;
+import models.charts.IStatisticModel;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,11 +23,11 @@ import java.util.Map;
 public class OperationsManager implements IViewListener {
   private static final Logger LOG = LogManager.getLogger(OperationsManager.class);
 
-  private OperationsView view;
-  private Config config;
+  private final OperationsView view;
+  private final Config config;
+  private final ChartModelsFactory chartModelsFactory;
   private OperationsStatistics operationsStatistics;
-  private ChartModelsFactory chartModelsFactory;
-  private Map<Tuple<StatisticType, List<Integer>>, Chart> statisticsCharts;
+  private Map<Tuple<StatisticType, List<Integer>>, Chart> cachedCharts;
   private Chart currentChart;
 
   OperationsManager(Config config) {
@@ -49,7 +49,7 @@ public class OperationsManager implements IViewListener {
         if (operations.isEmpty()) {
           view.showDialogMessage(config.getString(Config.OPERATIONS_NOT_FOUND), config.getIcon(Config.ALERT_ICON));
         } else {
-          statisticsCharts = new HashMap<>();
+          cachedCharts = new HashMap<>();
           operationsStatistics = new OperationsStatistics(operations);
 
           view.disableChartPane();
@@ -66,12 +66,12 @@ public class OperationsManager implements IViewListener {
   }
 
   private void generateChart(StatisticType statisticType, List<Integer> years) {
-    IStatisticChart statisticModel = chartModelsFactory.newStatisticModel(statisticType);
-    currentChart = statisticsCharts.get(new Tuple(statisticType, years));
+    IStatisticModel statisticModel = chartModelsFactory.newStatisticModel(statisticType);
+    currentChart = cachedCharts.get(new Tuple<>(statisticType, years));
 
     if (currentChart == null) {
       currentChart = statisticModel.createChart(operationsStatistics, years, config);
-      statisticsCharts.put(new Tuple(statisticType, years), currentChart);
+      cachedCharts.put(new Tuple<>(statisticType, years), currentChart);
     }
 
     view.initChartView(currentChart);
@@ -100,8 +100,8 @@ public class OperationsManager implements IViewListener {
     switch (event) {
       case OPEN_FILE -> readOperations();
       case GENERATE_CHART -> {
-        Tuple tuple = (Tuple) o;
-        generateChart((StatisticType) tuple.a, (List<Integer>) tuple.b);
+        Tuple<StatisticType, List<Integer>> tuple = (Tuple<StatisticType, List<Integer>>) o;
+        generateChart(tuple.a, tuple.b);
       }
       case SAVE_CHART -> saveChart();
     }

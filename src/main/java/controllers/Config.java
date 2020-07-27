@@ -64,13 +64,14 @@ public class Config {
   public static final String SCHENGEN_SERIES = "SCHENGEN_SERIES";
   public static final String NO_SCHENGEN_SERIES = "NO_SCHENGEN_SERIES";
   public static final String AIRCRAFT_TYPE_CHART_TITLE = "AIRCRAFT_TYPE_CHART_TITLE";
-  public static final String X_AIRCRAFT_TYPE_SERIES = "X_AIRCRAFT_TYPE_SERIES";
+  public static final String X_YEAR_AIRCRAFT_TYPE_SERIES = "X_YEAR_AIRCRAFT_TYPE_SERIES";
+  public static final String X_TRIMESTER_AIRCRAFT_TYPE_SERIES = "X_TRIMESTER_AIRCRAFT_TYPE_SERIES";
   public static final String Y_AIRCRAFT_TYPE_SERIES = "Y_AIRCRAFT_TYPE_SERIES";
   public static final String MTOW_CHART_TITLE = "MTOW_CHART_TITLE";
   public static final String X_MTOW_SERIES = "X_MTOW_SERIES";
   public static final String Y_MTOW_SERIES = "Y_MTOW_SERIES";
 
-  private Configuration config;
+  private final Configuration config;
 
   public Config() throws ConfigurationException {
     Configurations configs = new Configurations();

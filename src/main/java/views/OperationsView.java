@@ -133,11 +133,7 @@ public class OperationsView extends JFrame implements ActionListener {
     }
 
     statisticSelection.addItemListener(e -> {
-      if (StatisticType.getStatisticType((String) e.getItem()) != StatisticType.SCHENGEN) {
-        lastYearSelection.setVisible(true);
-      } else {
-        lastYearSelection.setVisible(false);
-      }
+      lastYearSelection.setVisible(StatisticType.getStatisticType((String) e.getItem()) != StatisticType.SCHENGEN);
     });
   }
 

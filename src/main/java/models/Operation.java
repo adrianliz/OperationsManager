@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Operation {
-  private enum Schengen {SCHENGEN, NO_SCHENGEN};
+  public enum Schengen {SCHENGEN, NO_SCHENGEN}
 
   @ExcelCell(3)
   private Date dateRaw;

@@ -6,6 +6,6 @@ import org.knowm.xchart.internal.chartpart.Chart;
 
 import java.util.List;
 
-public interface IStatisticChart {
+public interface IStatisticModel {
  Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years, Config config);
 }
