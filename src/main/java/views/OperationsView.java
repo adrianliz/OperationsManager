@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class OperationsView extends JFrame implements ActionListener {
-  public enum FILE_ACTION {OPEN, SAVE}
+  public enum FILE_CHOOSER_ACTION {OPEN, SAVE}
 
   private final IViewListener controller;
   private final Config config;
@@ -153,7 +153,7 @@ public class OperationsView extends JFrame implements ActionListener {
     stateStatus.setText(message);
   }
 
-  public String selectFilePath(FILE_ACTION fileAction) {
+  public String selectFilePath(FILE_CHOOSER_ACTION fileAction) {
     int result = -1;
     String filePath = null;
 

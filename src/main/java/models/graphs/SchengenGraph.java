@@ -15,8 +15,8 @@ import java.util.List;
 public class SchengenGraph implements IYearGraph {
   private static final Logger LOG = LogManager.getLogger(MTOWGraph.class);
 
-  private OperationsStatistics statistics;
-  private Config config;
+  private final OperationsStatistics statistics;
+  private final Config config;
 
   public SchengenGraph(OperationsStatistics statistics, Config config) {
     this.statistics = statistics;

@@ -1,6 +1,6 @@
 <Configuration status="WARN">
   <Properties>
-    <Property name="logPath">logs</Property>
+    <Property name="logPath">.logs</Property>
     <Property name="rollingFileName">log-file</Property>
   </Properties>
   <Appenders>

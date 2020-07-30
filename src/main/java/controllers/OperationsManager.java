@@ -33,7 +33,7 @@ public class OperationsManager implements IViewListener {
   }
 
   private void readOperations() {
-    String filePath = view.selectFilePath(OperationsView.FILE_ACTION.OPEN);
+    String filePath = view.selectFilePath(OperationsView.FILE_CHOOSER_ACTION.OPEN);
 
     if (filePath != null) {
       try {
@@ -71,7 +71,7 @@ public class OperationsManager implements IViewListener {
   }
 
   private void saveChart() {
-    String filePath = view.selectFilePath(OperationsView.FILE_ACTION.SAVE);
+    String filePath = view.selectFilePath(OperationsView.FILE_CHOOSER_ACTION.SAVE);
 
     try {
       BitmapEncoder.saveBitmapWithDPI(currentGraph, filePath,

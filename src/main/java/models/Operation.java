@@ -20,6 +20,8 @@ public class Operation {
   private double aircraftMTOW; //aircraft max weight at arrival
   @ExcelCellName("SCHENGEN/NO-SCHENGEN")
   private String schengen;
+  @ExcelCell(12)
+  private int headerRunway;
 
   public Calendar getDate() {
     if (date == null) {
@@ -42,6 +44,10 @@ public class Operation {
 
   public double getAircraftMTOW() {
     return aircraftMTOW;
+  }
+
+  public int getHeaderRunway() {
+    return headerRunway;
   }
 
   public boolean isSchengen() {

@@ -12,16 +12,6 @@ public enum Trimester {
     this.trimester = trimester;
   }
 
-  public static Trimester getTrimesterType(String s) {
-    for (Trimester trimester: Trimester.values()) {
-      if (trimester.toString().equals(s)) {
-        return trimester;
-      }
-    }
-
-    return null;
-  }
-
   @Override
   public String toString() {
     return trimester;

@@ -15,14 +15,18 @@ import javax.swing.*;
 import java.awt.*;
 
 public class StatisticSelectionView extends JPanel {
+  private final static StatisticType[] TRIMESTER_STATISTICS = {StatisticType.AIRCRAFT_TYPE};
+
   private final OperationsView mainView;
-  private JComboBox<String> statisticsOptions;
+  private final Config config;
+
+  private ComboBoxModel<StatisticType> yearStatisticsOptions;
+  private ComboBoxModel<StatisticType> trimesterStatisticsOptions;
+  private JComboBox<StatisticType> statisticOptions;
   private JComboBox<Integer> firstYearOptions;
   private JComboBox<Integer> lastYearOptions;
-  private JComboBox<String> trimesterOptions;
+  private JComboBox<Trimester> trimesterOptions;
 
-  private final Config config;
-  private List<Integer> statisticsYears;
   private GraphFactory.GraphFamily graphFamily;
 
   StatisticSelectionView(OperationsView mainView, JPanel parentPanel,
@@ -38,38 +42,19 @@ public class StatisticSelectionView extends JPanel {
   }
 
   private void createView() {
-    statisticsOptions = new JComboBox<>();
+    yearStatisticsOptions = new DefaultComboBoxModel<>(StatisticType.values());
+    trimesterStatisticsOptions = new DefaultComboBoxModel<>(TRIMESTER_STATISTICS);
+
+    statisticOptions = new JComboBox<>(yearStatisticsOptions);
     firstYearOptions = new JComboBox<>();
     lastYearOptions = new JComboBox<>();
-    trimesterOptions = new JComboBox<>();
+    trimesterOptions = new JComboBox<>(Trimester.values());
     JButton generateGraphButton = new JButton(config.getString(Config.GENERATE_GRAPH_BUTTON));
 
-    //TODO Clean listeners
-    firstYearOptions.addItemListener(e -> {
-      lastYearOptions.removeAllItems();
+    statisticOptions.addItemListener(e -> lastYearOptions.setEnabled(!e.getItem().equals(StatisticType.SCHENGEN_OP)));
+    generateGraphButton.addActionListener(e -> readSelection());
 
-      for (int year: statisticsYears) {
-        if (year >= (int) e.getItem()) {
-          lastYearOptions.addItem(year);
-        }
-      }
-    });
-
-    for (StatisticType statisticType: StatisticType.values()) {
-      statisticsOptions.addItem(statisticType.toString());
-
-      statisticsOptions.addItemListener(e -> {
-        lastYearOptions.setEnabled(StatisticType.getStatisticType((String) e.getItem()) != StatisticType.SCHENGEN_OP);
-      });
-    }
-
-    for (Trimester trimester: Trimester.values()) {
-      trimesterOptions.addItem(trimester.toString());
-    }
-
-    generateGraphButton.addActionListener(e -> StatisticSelectionView.this.readSelection());
-
-    add(statisticsOptions);
+    add(statisticOptions);
     add(firstYearOptions);
     add(lastYearOptions);
     add(trimesterOptions);
@@ -81,21 +66,23 @@ public class StatisticSelectionView extends JPanel {
 
   private void readSelection() {
     GraphProperties graphProperties = null;
-    StatisticType statisticType = StatisticType.getStatisticType((String) statisticsOptions.getSelectedItem());
+    StatisticType statisticType = (StatisticType) statisticOptions.getSelectedItem();
     int firstYear = (int) firstYearOptions.getSelectedItem();
 
     switch (graphFamily) {
-      case YEAR -> graphProperties = new GraphProperties(getYearsAfter(firstYear, (int) lastYearOptions.getSelectedItem()));
+      case YEAR -> graphProperties =
+        new GraphProperties(generateGraphYears(firstYear, (int) lastYearOptions.getSelectedItem()));
       case TRIMESTER -> graphProperties =
-        new GraphProperties(firstYear, Trimester.getTrimesterType((String) trimesterOptions.getSelectedItem()));
+        new GraphProperties(firstYear, (Trimester) trimesterOptions.getSelectedItem());
 
     }
 
-    mainView.notify(IViewListener.Event.GENERATE_GRAPH, new Tuple<>(graphFamily, new Tuple<>(statisticType, graphProperties)));
+    mainView.notify(IViewListener.Event.GENERATE_GRAPH,
+                    new Tuple<>(graphFamily, new Tuple<>(statisticType, graphProperties)));
   }
 
-  private List<Integer> getYearsAfter(int firstYear, int lastYear) {
-    List <Integer> years = new ArrayList<>();
+  private List<Integer> generateGraphYears(int firstYear, int lastYear) {
+    List<Integer> years = new ArrayList<>();
 
     while (firstYear <= lastYear) {
       years.add(firstYear++);
@@ -105,15 +92,23 @@ public class StatisticSelectionView extends JPanel {
   }
 
   void initStatisticSelection(OperationsStatistics statistics) {
-    statisticsYears = statistics.getDifferentYears();
+    List<Integer> operationsYears = statistics.getDifferentYears();
 
     firstYearOptions.removeAllItems();
     lastYearOptions.removeAllItems();
 
-    for (int year: statisticsYears) {
+    for (int year: operationsYears) {
       firstYearOptions.addItem(year);
       lastYearOptions.addItem(year);
     }
+
+    firstYearOptions.addItemListener(e -> {
+      lastYearOptions.removeAllItems();
+
+      for (int year: operationsYears) {
+        if (year >= (int) e.getItem()) lastYearOptions.addItem(year);
+      }
+    });
 
     setVisible(true);
   }
@@ -123,15 +118,13 @@ public class StatisticSelectionView extends JPanel {
       case YEAR -> {
         lastYearOptions.setVisible(true);
         trimesterOptions.setVisible(false);
-        statisticsOptions.addItem(StatisticType.MTOW_AVERAGE.toString());
-        statisticsOptions.addItem(StatisticType.SCHENGEN_OP.toString());
+        statisticOptions.setModel(yearStatisticsOptions);
       }
 
       case TRIMESTER -> {
         lastYearOptions.setVisible(false);
         trimesterOptions.setVisible(true);
-        statisticsOptions.removeItem(StatisticType.MTOW_AVERAGE.toString());
-        statisticsOptions.removeItem(StatisticType.SCHENGEN_OP.toString());
+        statisticOptions.setModel(trimesterStatisticsOptions);
       }
     }
 

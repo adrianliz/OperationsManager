@@ -1,0 +1,27 @@
+<Configuration status="WARN">
+  <Properties>
+    <Property name="logPath">target/dev-logs</Property>
+    <Property name="rollingFileName">log-file</Property>
+  </Properties>
+  <Appenders>
+    <Console name="console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%highlight{%-5level}%d{dd MMM yyyy HH:mm:ss} %c - %m%n" />
+    </Console>
+
+    <RollingFile name="rollingFile" fileName="${logPath}/${rollingFileName}.log"
+                 filePattern="${logPath}/${rollingFileName}_%d{dd-MM-yyyy}.log">
+      <PatternLayout pattern="%highlight{%-5level}%d{dd MMM yyyy HH:mm:ss} %c - %m%n" />
+      <Policies>
+        <!-- Causes a rollover once the date/time pattern no longer applies to the active file -->
+        <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+      </Policies>
+    </RollingFile>
+  </Appenders>
+
+  <Loggers>
+    <Root level="DEBUG" additivity="false">
+      <AppenderRef ref="console" />
+      <AppenderRef ref="rollingFile" />
+    </Root>
+  </Loggers>
+</Configuration>

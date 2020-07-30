@@ -75,7 +75,7 @@ public class OperationsStatistics {
       if (date != null) {
         int year = date.get(Calendar.YEAR);
 
-        if (!years.contains(year)) {
+        if (! years.contains(year)) {
           years.add(year);
         }
       }
@@ -85,9 +85,26 @@ public class OperationsStatistics {
     return years;
   }
 
+  public List<Integer> getDifferentHeaderRunways() {
+    List<Integer> headerRunways = new ArrayList<>();
+
+    for (Operation operation: operations) {
+      int headerRunway = operation.getHeaderRunway();
+
+      if (headerRunway != 0) {
+        if (!headerRunways.contains(headerRunway)) {
+          headerRunways.add(headerRunway);
+        }
+      }
+    }
+
+    return headerRunways;
+  }
+
   public int getOperationsCount(int year) {
     return getOperationsIn(year).size();
   }
+
 
   public int getOperationsCount(int year, AircraftType aircraftType) {
     int operationsCount = 0;
@@ -100,16 +117,6 @@ public class OperationsStatistics {
           operationsCount++;
         }
       }
-    }
-
-    return operationsCount;
-  }
-
-  public List<Integer> getOperationsCount(List<Integer> years, AircraftType aircraftType) {
-    List<Integer> operationsCount = new ArrayList<>();
-
-    for (int year : years) {
-      operationsCount.add(getOperationsCount(year, aircraftType));
     }
 
     return operationsCount;
@@ -142,6 +149,18 @@ public class OperationsStatistics {
             operationsCount++;
           }
         }
+      }
+    }
+
+    return operationsCount;
+  }
+
+  public int getOperationsCount(int year, int headerRunway) {
+    int operationsCount = 0;
+
+    for (Operation operation: getOperationsIn(year)) {
+      if (operation.getHeaderRunway() == headerRunway) {
+        operationsCount++;
       }
     }
 

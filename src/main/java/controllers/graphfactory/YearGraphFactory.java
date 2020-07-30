@@ -17,6 +17,12 @@ class YearGraphFactory extends GraphFactory {
       case MTOW_AVERAGE -> {
         return MTOWGraph.createGraph(graphProperties.getYears());
       }
+      case OP_EVOLUTION -> {
+        return operationsEvolutionGraph.createGraph(graphProperties.getYears());
+      }
+      case HEADER_RUNWAY_OP -> {
+        return headerRunwaysGraph.createGraph(graphProperties.getYears());
+      }
       default -> throw new IllegalStateException("Unexpected value: " + statisticType);
     }
   }

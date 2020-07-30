@@ -20,10 +20,10 @@ public class Config {
 
   /* EXCEL CONFIG */
   public static final String EXCEL_HEADER_ROW = "EXCEL_HEADER_ROW";
+  public static final String EXCEL_DATE_FORMAT = "EXCEL_DATE_FORMAT";
   public static final String EXCEL_DATE_FORMAT_INDEX = "EXCEL_DATE_FORMAT_INDEX";
   public static final String LANDINGS_SHEET = "LANDINGS_SHEET";
   public static final String DEPARTURES_SHEET = "DEPARTURES_SHEET";
-  public static final String EXCEL_DATE_FORMAT = "EXCEL_DATE_FORMAT";
 
   /* VIEW CONFIG */
   public static final String MINIMUM_WINDOW_WIDTH = "MINIMUM_WINDOW_WIDTH";
@@ -36,8 +36,8 @@ public class Config {
   public static final String SETTINGS_MENU = "SETTINGS_MENU";
   public static final String OPEN_FILE_MENU_ITEM = "OPEN_FILE_MENU_ITEM";
   public static final String SAVE_GRAPH_MENU_ITEM = "SAVE_GRAPH_MENU_ITEM";
-  public static final String GRAPH_FAMILY_MENU_ITEM = "GRAPH_FAMILY_MENU_ITEM";
   public static final String GENERATE_GRAPH_BUTTON = "GENERATE_GRAPH_BUTTON";
+  public static final String GRAPH_FAMILY_MENU_ITEM = "GRAPH_FAMILY_MENU_ITEM";
   public static final String YEAR_RADIO_BUTTON = "YEAR_RADIO_BUTTON";
   public static final String TRIMESTER_RADIO_BUTTON = "TRIMESTER_RADIO_BUTTON";
 
@@ -63,17 +63,28 @@ public class Config {
   public static final String OPERATIONS_NOT_FOUND = "OPERATIONS_NOT_FOUND";
   public static final String SAVE_GRAPH_ERROR = "SAVE_CHART_ERROR";
 
-  /* CHARTS CONFIG */
+  /* GRAPH CONFIG */
   public static final String SCHENGEN_GRAPH_TITLE = "SCHENGEN_GRAPH_TITLE";
   public static final String SCHENGEN_SERIES = "SCHENGEN_SERIES";
   public static final String NO_SCHENGEN_SERIES = "NO_SCHENGEN_SERIES";
+
   public static final String AIRCRAFT_TYPE_GRAPH_TITLE = "AIRCRAFT_TYPE_GRAPH_TITLE";
   public static final String X_YEAR_AIRCRAFT_TYPE_SERIES = "X_YEAR_AIRCRAFT_TYPE_SERIES";
   public static final String X_TRIMESTER_AIRCRAFT_TYPE_SERIES = "X_TRIMESTER_AIRCRAFT_TYPE_SERIES";
   public static final String Y_AIRCRAFT_TYPE_SERIES = "Y_AIRCRAFT_TYPE_SERIES";
+
   public static final String MTOW_GRAPH_TITLE = "MTOW_GRAPH_TITLE";
   public static final String X_MTOW_SERIES = "X_MTOW_SERIES";
   public static final String Y_MTOW_SERIES = "Y_MTOW_SERIES";
+
+  public static final String OPERATIONS_EVOLUTION_GRAPH_TITLE = "OPERATIONS_EVOLUTION_GRAPH_TITLE";
+  public static final String OPERATIONS_EVOLUTION_SERIES_NAME = "OPERATIONS_EVOLUTION_SERIES";
+  public static final String X_OPERATIONS_EVOLUTION_SERIES = "X_OPERATIONS_EVOLUTION_SERIES";
+  public static final String Y_OPERATIONS_EVOLUTION_SERIES = "Y_OPERATIONS_EVOLUTION_SERIES";
+
+  public static final String HEADER_RUNWAY_GRAPH_TITLE = "HEADER_RUNWAY_GRAPH_TITLE";
+  public static final String X_HEADER_RUNWAY_SERIES = "X_HEADER_RUNWAY_SERIES";
+  public static final String Y_HEADER_RUNWAY_SERIES = "Y_HEADER_RUNWAY_SERIES";
 
   private final Configuration config;
 
