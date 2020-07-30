@@ -2,6 +2,7 @@ package models;
 
 import com.poiji.annotation.ExcelCell;
 import com.poiji.annotation.ExcelCellName;
+import models.enums.AircraftType;
 
 import java.util.Calendar;
 import java.util.Date;

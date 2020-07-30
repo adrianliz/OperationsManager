@@ -30,12 +30,16 @@ public class Config {
   public static final String MINIMUM_WINDOW_HEIGHT = "MINIMUM_WINDOW_HEIGHT";
   public static final String VERTICAL_GAP_MENU_BAR = "VERTICAL_GAP_MENU_BAR";
   public static final String MENU_BAR_ITEMS = "MENU_BAR_ITEMS";
-  public static final String HORIZONTAL_GAP_STATISTIC_PANE = "HORIZONTAL_GAP_STATISTIC_PANE";
+  public static final String HORIZONTAL_GAP_STATISTIC_SELECTION = "HORIZONTAL_GAP_STATISTIC_SELECTION";
 
   public static final String FILE_MENU = "FILE_MENU";
+  public static final String SETTINGS_MENU = "SETTINGS_MENU";
   public static final String OPEN_FILE_MENU_ITEM = "OPEN_FILE_MENU_ITEM";
-  public static final String SAVE_CHART_MENU_ITEM = "SAVE_CHART_MENU_ITEM";
-  public static final String ACCEPT_STATISTIC_BUTTON = "ACCEPT_STATISTIC_BUTTON";
+  public static final String SAVE_GRAPH_MENU_ITEM = "SAVE_GRAPH_MENU_ITEM";
+  public static final String GRAPH_FAMILY_MENU_ITEM = "GRAPH_FAMILY_MENU_ITEM";
+  public static final String GENERATE_GRAPH_BUTTON = "GENERATE_GRAPH_BUTTON";
+  public static final String YEAR_RADIO_BUTTON = "YEAR_RADIO_BUTTON";
+  public static final String TRIMESTER_RADIO_BUTTON = "TRIMESTER_RADIO_BUTTON";
 
   public static final String EXCEL_DESC = "EXCEL_DESC";
   public static final String PNG_DESC = "PNG_DESC";
@@ -47,27 +51,27 @@ public class Config {
   public static final String OPERATIONS_READ_STATE = "OPERATIONS_READ_STATE";
 
   /* MESSAGES CONFIG */
-  public static final String CHART_SAVED = "CHART_SAVED";
+  public static final String GRAPH_SAVED = "GRAPH_SAVED";
 
   public static final String OPERATIONS_READ_LOG = "OPERATIONS_READ_LOG";
-  public static final String GENERATING_CHART_LOG = "GENERATING_CHART_LOG";
-  public static final String CHART_GENERATED_LOG = "CHART_GENERATED_LOG";
-  public static final String CHART_SAVED_LOG = "CHART_SAVED_lOG";
+  public static final String GENERATING_GRAPH_LOG = "GENERATING_GRAPH_LOG";
+  public static final String GRAPH_GENERATED_LOG = "GRAPH_GENERATED_LOG";
+  public static final String GRAPH_SAVED_LOG = "GRAPH_SAVED_lOG";
 
   public static final String LAF_ERROR = "LAF_ERROR";
   public static final String FILE_EXT_ERROR = "FILE_EXT_ERROR";
   public static final String OPERATIONS_NOT_FOUND = "OPERATIONS_NOT_FOUND";
-  public static final String SAVE_CHART_ERROR = "SAVE_CHART_ERROR";
+  public static final String SAVE_GRAPH_ERROR = "SAVE_CHART_ERROR";
 
   /* CHARTS CONFIG */
-  public static final String SCHENGEN_CHART_TITLE = "SCHENGEN_CHART_TITLE";
+  public static final String SCHENGEN_GRAPH_TITLE = "SCHENGEN_GRAPH_TITLE";
   public static final String SCHENGEN_SERIES = "SCHENGEN_SERIES";
   public static final String NO_SCHENGEN_SERIES = "NO_SCHENGEN_SERIES";
-  public static final String AIRCRAFT_TYPE_CHART_TITLE = "AIRCRAFT_TYPE_CHART_TITLE";
+  public static final String AIRCRAFT_TYPE_GRAPH_TITLE = "AIRCRAFT_TYPE_GRAPH_TITLE";
   public static final String X_YEAR_AIRCRAFT_TYPE_SERIES = "X_YEAR_AIRCRAFT_TYPE_SERIES";
   public static final String X_TRIMESTER_AIRCRAFT_TYPE_SERIES = "X_TRIMESTER_AIRCRAFT_TYPE_SERIES";
   public static final String Y_AIRCRAFT_TYPE_SERIES = "Y_AIRCRAFT_TYPE_SERIES";
-  public static final String MTOW_CHART_TITLE = "MTOW_CHART_TITLE";
+  public static final String MTOW_GRAPH_TITLE = "MTOW_GRAPH_TITLE";
   public static final String X_MTOW_SERIES = "X_MTOW_SERIES";
   public static final String Y_MTOW_SERIES = "Y_MTOW_SERIES";
 

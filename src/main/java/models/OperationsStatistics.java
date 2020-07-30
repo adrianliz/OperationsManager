@@ -1,5 +1,8 @@
 package models;
 
+import models.enums.AircraftType;
+import models.enums.Trimester;
+
 import java.util.*;
 
 public class OperationsStatistics {
@@ -54,10 +57,10 @@ public class OperationsStatistics {
     List<Operation> trimesterOperations = new ArrayList<>();
 
     switch (trimester) {
-      case PRIMERO -> trimesterOperations = filterOperationsBetween(yearOperations, Calendar.JANUARY, Calendar.MARCH);
-      case SEGUNDO -> trimesterOperations = filterOperationsBetween(yearOperations, Calendar.APRIL, Calendar.JUNE);
-      case TERCERO -> trimesterOperations = filterOperationsBetween(yearOperations, Calendar.JULY, Calendar.SEPTEMBER);
-      case CUARTO -> trimesterOperations = filterOperationsBetween(yearOperations, Calendar.OCTOBER, Calendar.DECEMBER);
+      case FIRST -> trimesterOperations = filterOperationsBetween(yearOperations, Calendar.JANUARY, Calendar.MARCH);
+      case SECOND -> trimesterOperations = filterOperationsBetween(yearOperations, Calendar.APRIL, Calendar.JUNE);
+      case THIRD -> trimesterOperations = filterOperationsBetween(yearOperations, Calendar.JULY, Calendar.SEPTEMBER);
+      case QUARTER -> trimesterOperations = filterOperationsBetween(yearOperations, Calendar.OCTOBER, Calendar.DECEMBER);
     }
 
     return trimesterOperations;
@@ -80,6 +83,10 @@ public class OperationsStatistics {
 
     Collections.sort(years);
     return years;
+  }
+
+  public int getOperationsCount(int year) {
+    return getOperationsIn(year).size();
   }
 
   public int getOperationsCount(int year, AircraftType aircraftType) {
@@ -115,16 +122,6 @@ public class OperationsStatistics {
       if (operation.getAircraftType().equals(aircraftType)) {
         operationsCount++;
       }
-    }
-
-    return operationsCount;
-  }
-
-  public List<Integer> getOperationsCount(int year, Trimester[] trimesters, AircraftType aircraftType) {
-    List<Integer> operationsCount = new ArrayList<>();
-
-    for (Trimester trimester: trimesters) {
-      operationsCount.add(getOperationsCount(year, trimester, aircraftType));
     }
 
     return operationsCount;

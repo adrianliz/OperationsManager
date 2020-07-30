@@ -1,4 +1,4 @@
-package models.charts;
+package models.graphs;
 
 import controllers.Config;
 import models.Operation;
@@ -12,17 +12,25 @@ import org.knowm.xchart.style.PieStyler;
 
 import java.util.List;
 
-public class SchengenStatistic implements IStatisticModel {
-  private static final Logger LOG = LogManager.getLogger(MTOWStatistic.class);
+public class SchengenGraph implements IYearGraph {
+  private static final Logger LOG = LogManager.getLogger(MTOWGraph.class);
+
+  private OperationsStatistics statistics;
+  private Config config;
+
+  public SchengenGraph(OperationsStatistics statistics, Config config) {
+    this.statistics = statistics;
+    this.config = config;
+  }
 
   @Override
-  public Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years, Config config) {
+  public Chart createGraph(List<Integer> years) {
     PieChart chart =
       new PieChartBuilder()
-        .title(config.getString(Config.SCHENGEN_CHART_TITLE))
+        .title(config.getString(Config.SCHENGEN_GRAPH_TITLE))
         .build();
 
-    LOG.info(config.getString(Config.GENERATING_CHART_LOG) + " " + chart.getTitle());
+    LOG.info(config.getString(Config.GENERATING_GRAPH_LOG) + " " + chart.getTitle());
 
     PieStyler styler = chart.getStyler();
     styler.setLegendVisible(true);
@@ -34,9 +42,9 @@ public class SchengenStatistic implements IStatisticModel {
     styler.setStartAngleInDegrees(90);
 
     chart.addSeries(config.getString(Config.SCHENGEN_SERIES),
-                    operationsStatistics.getOperationsCount(years.get(0), Operation.Schengen.SCHENGEN));
+                    statistics.getOperationsCount(years.get(0), Operation.Schengen.SCHENGEN));
     chart.addSeries(config.getString(Config.NO_SCHENGEN_SERIES),
-                    operationsStatistics.getOperationsCount(years.get(0), Operation.Schengen.NO_SCHENGEN));
+                    statistics.getOperationsCount(years.get(0), Operation.Schengen.NO_SCHENGEN));
 
     return chart;
   }

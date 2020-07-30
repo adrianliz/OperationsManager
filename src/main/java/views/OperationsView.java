@@ -2,9 +2,8 @@ package views;
 
 import controllers.Config;
 import controllers.IViewListener;
+import controllers.graphfactory.GraphFactory;
 import models.OperationsStatistics;
-import models.StatisticType;
-import models.Tuple;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.internal.chartpart.Chart;
 
@@ -14,8 +13,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class OperationsView extends JFrame implements ActionListener {
   public enum FILE_ACTION {OPEN, SAVE}
@@ -24,17 +21,17 @@ public class OperationsView extends JFrame implements ActionListener {
   private final Config config;
 
   private JLabel stateStatus;
-  private JPanel statisticPane;
+  private StatisticSelectionView statisticSelectionView;
   private JPanel chartPane;
-  private JComboBox<Integer> firstYearSelection;
-  private JComboBox<Integer> lastYearSelection;
-  private JComboBox<String> statisticSelection;
   private JMenuItem saveChart;
+
+  private GraphFactory.GraphFamily graphFamily;
 
   public OperationsView(IViewListener controller, Config config) {
     super(config.getString(Config.APP_NAME) + " " + config.getString(Config.APP_VERSION));
     this.config = config;
     this.controller = controller;
+    graphFamily = GraphFactory.GraphFamily.YEAR;
 
     createMainWindow();
   }
@@ -49,7 +46,7 @@ public class OperationsView extends JFrame implements ActionListener {
 
     JPanel centerPane = new JPanel();
     centerPane.setLayout(new BoxLayout(centerPane, BoxLayout.Y_AXIS));
-    createStatisticSelection(centerPane);
+    statisticSelectionView = new StatisticSelectionView(this, centerPane, graphFamily, config);
 
     chartPane = new JPanel();
     chartPane.setLayout(new GridLayout(1, 1));
@@ -81,6 +78,16 @@ public class OperationsView extends JFrame implements ActionListener {
     return new Dimension(screenSize.width - getWidth(), screenSize.height - taskBarSize - getHeight());
   }
 
+  private JRadioButtonMenuItem createButtonMenuItem (String label) {
+    JRadioButtonMenuItem radioButtonMenuItem =
+      new JRadioButtonMenuItem(config.getString(label));
+
+    radioButtonMenuItem.addActionListener(this);
+    radioButtonMenuItem.setActionCommand(label);
+
+    return radioButtonMenuItem;
+  }
+
   private JMenuItem createMenuItem(String label, boolean enable) {
     JMenuItem menuItem = new JMenuItem(config.getString(label), config.getString(label).charAt(0));
 
@@ -100,59 +107,41 @@ public class OperationsView extends JFrame implements ActionListener {
     fileMenu.add(createMenuItem(Config.OPEN_FILE_MENU_ITEM));
     fileMenu.addSeparator();
 
-    saveChart = createMenuItem(Config.SAVE_CHART_MENU_ITEM, false);
+    saveChart = createMenuItem(Config.SAVE_GRAPH_MENU_ITEM, false);
     fileMenu.add(saveChart);
 
     return fileMenu;
+  }
+
+  private JMenu createSettingsMenu(String label) {
+    JMenu settingsMenu = new JMenu(label);
+
+    JMenu graphTypeMenu = new JMenu(config.getString(Config.GRAPH_FAMILY_MENU_ITEM));
+    settingsMenu.add(graphTypeMenu);
+
+    ButtonGroup buttonGroup = new ButtonGroup();
+    JRadioButtonMenuItem yearButton = createButtonMenuItem(Config.YEAR_RADIO_BUTTON);
+    JRadioButtonMenuItem trimesterButton = createButtonMenuItem(Config.TRIMESTER_RADIO_BUTTON);
+    buttonGroup.add(yearButton);
+    buttonGroup.add(trimesterButton);
+    graphTypeMenu.add(yearButton);
+    graphTypeMenu.add(trimesterButton);
+
+    yearButton.setSelected(true);
+    return settingsMenu;
   }
 
   private void createMenuBar(JPanel panel) {
     JMenuBar menuBar = new JMenuBar();
 
     menuBar.add(createFileMenu(config.getString(Config.FILE_MENU)));
+    menuBar.add(createSettingsMenu(config.getString(Config.SETTINGS_MENU)));
 
     panel.add(menuBar);
   }
 
-  private JButton createButton(String label, boolean enable) {
-    JButton button = new JButton(config.getString(label));
-    button.addActionListener(this);
-    button.setActionCommand(label);
-    button.setEnabled(enable);
-
-    return button;
-  }
-
-  private JButton createButton(String label) {
-    return createButton(label, true);
-  }
-
-  private void addStatistics() {
-    for (StatisticType statisticType: StatisticType.values()) {
-      statisticSelection.addItem(statisticType.toString());
-    }
-
-    statisticSelection.addItemListener(e -> {
-      lastYearSelection.setVisible(StatisticType.getStatisticType((String) e.getItem()) != StatisticType.SCHENGEN);
-    });
-  }
-
-  private void createStatisticSelection(JPanel panel) {
-    statisticPane = new JPanel();
-    statisticPane.setLayout(new FlowLayout(FlowLayout.CENTER, config.getInt(Config.HORIZONTAL_GAP_STATISTIC_PANE), 0));
-
-    statisticSelection = new JComboBox<>();
-    firstYearSelection = new JComboBox<>();
-    lastYearSelection = new JComboBox<>();
-    statisticPane.add(statisticSelection);
-    statisticPane.add(firstYearSelection);
-    statisticPane.add(lastYearSelection);
-
-    addStatistics();
-    statisticPane.add(createButton(Config.ACCEPT_STATISTIC_BUTTON));
-
-    statisticPane.setVisible(false);
-    panel.add(statisticPane);
+  public void notify(IViewListener.Event event, Object o) {
+    controller.eventFired(event, o);
   }
 
   public void showDialogMessage(String message, ImageIcon icon) {
@@ -193,25 +182,8 @@ public class OperationsView extends JFrame implements ActionListener {
     return filePath;
   }
 
-  public void initStatisticSelection(OperationsStatistics operationsStatistics) {
-    List<Integer> years = operationsStatistics.getDifferentYears();
-    firstYearSelection.removeAllItems();
-    lastYearSelection.removeAllItems();
-
-    for (int year: years) {
-      firstYearSelection.addItem(year);
-      lastYearSelection.addItem(year);
-    }
-
-    firstYearSelection.addItemListener(e -> {
-      lastYearSelection.removeAllItems();
-      for (int year: getYearsAfter((int) e.getItem(), years.get(years.size() - 1))) {
-        lastYearSelection.addItem(year);
-      }
-    });
-
-    lastYearSelection.setVisible(false);
-    statisticPane.setVisible(true);
+  public void initStatisticSelection(OperationsStatistics statistics) {
+    statisticSelectionView.initStatisticSelection(statistics);
   }
 
   public void disableChartPane() {
@@ -230,25 +202,16 @@ public class OperationsView extends JFrame implements ActionListener {
     });
   }
 
-  private List<Integer> getYearsAfter(int firstYear, int lastYear) {
-    List <Integer> years = new ArrayList<>();
-
-    while (firstYear <= lastYear) {
-      years.add(firstYear++);
-    }
-
-    return years;
-  }
-
-  private Tuple<StatisticType, List<Integer>> readStatisticSelection() {
-    return new Tuple<>(StatisticType.getStatisticType((String) statisticSelection.getSelectedItem()),
-                       getYearsAfter((int) firstYearSelection.getSelectedItem(),
-                                     (int) lastYearSelection.getSelectedItem()));
-  }
-
   public void enableEvent(IViewListener.Event event, boolean enable) {
     switch (event) {
       case SAVE_CHART -> saveChart.setEnabled(enable);
+    }
+  }
+
+  public void changeStatisticSelection(GraphFactory.GraphFamily newGraphFamily) {
+    if (newGraphFamily != graphFamily) {
+      statisticSelectionView.changeStatisticSelection(newGraphFamily);
+      graphFamily = newGraphFamily;
     }
   }
 
@@ -256,9 +219,9 @@ public class OperationsView extends JFrame implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     switch (e.getActionCommand()) {
       case Config.OPEN_FILE_MENU_ITEM -> controller.eventFired(IViewListener.Event.OPEN_FILE, null);
-      case Config.ACCEPT_STATISTIC_BUTTON -> controller.eventFired(IViewListener.Event.GENERATE_CHART,
-                                                                   readStatisticSelection());
-      case Config.SAVE_CHART_MENU_ITEM -> controller.eventFired(IViewListener.Event.SAVE_CHART, null);
+      case Config.SAVE_GRAPH_MENU_ITEM -> controller.eventFired(IViewListener.Event.SAVE_CHART, null);
+      case Config.YEAR_RADIO_BUTTON -> changeStatisticSelection(GraphFactory.GraphFamily.YEAR);
+      case Config.TRIMESTER_RADIO_BUTTON -> changeStatisticSelection(GraphFactory.GraphFamily.TRIMESTER);
     }
   }
 }

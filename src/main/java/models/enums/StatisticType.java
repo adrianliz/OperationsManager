@@ -1,12 +1,11 @@
-package models;
+package models.enums;
 
 public enum StatisticType {
-  SCHENGEN("Estadística Schengen"),
-  TIPO_AERONAVE("Estadística Tipo Aeronave"),
-  MEDIA_MTOW("Estadística Media MTOW");
+  AIRCRAFT_TYPE("Estadística Tipo Aeronave"),
+  MTOW_AVERAGE("Estadística Media MTOW"),
+  SCHENGEN_OP("Estadística Schengen");
 
   private final String statisticType;
-
   StatisticType(final String statisticType) {
     this.statisticType = statisticType;
   }

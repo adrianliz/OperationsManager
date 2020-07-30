@@ -1,4 +1,4 @@
-package models.charts;
+package models.graphs;
 
 import controllers.Config;
 import models.OperationsStatistics;
@@ -13,19 +13,27 @@ import org.knowm.xchart.style.Styler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MTOWStatistic implements IStatisticModel {
-  private static final Logger LOG = LogManager.getLogger(MTOWStatistic.class);
+public class MTOWGraph implements IYearGraph {
+  private static final Logger LOG = LogManager.getLogger(MTOWGraph.class);
+
+  private OperationsStatistics statistics;
+  private Config config;
+
+  public MTOWGraph(OperationsStatistics statistics, Config config) {
+    this.statistics = statistics;
+    this.config = config;
+  }
 
   @Override
-  public Chart createChart(OperationsStatistics operationsStatistics, List<Integer> years, Config config) {
+  public Chart createGraph(List<Integer> years) {
     CategoryChart chart =
       new CategoryChartBuilder()
-        .title(config.getString(Config.MTOW_CHART_TITLE))
+        .title(config.getString(Config.MTOW_GRAPH_TITLE))
         .xAxisTitle(config.getString(Config.X_MTOW_SERIES))
         .yAxisTitle(config.getString(Config.Y_MTOW_SERIES))
         .build();
 
-    LOG.info(config.getString(Config.GENERATING_CHART_LOG) + " " + chart.getTitle());
+    LOG.info(config.getString(Config.GENERATING_GRAPH_LOG) + " " + chart.getTitle());
 
     CategoryStyler styler = chart.getStyler();
     styler.setChartTitleVisible(true);
@@ -36,10 +44,10 @@ public class MTOWStatistic implements IStatisticModel {
 
     List<Integer> yData = new ArrayList<>();
     for (int year: years) {
-      yData.add(operationsStatistics.getMTOWAverage(year));
+      yData.add(statistics.getMTOWAverage(year));
     }
 
-    chart.addSeries(config.getString(Config.MTOW_CHART_TITLE), years, yData);
+    chart.addSeries(config.getString(Config.MTOW_GRAPH_TITLE), years, yData);
     return chart;
   }
 }

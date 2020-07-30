@@ -1,12 +1,11 @@
 package controllers;
 
 import com.poiji.exception.InvalidExcelFileExtension;
+import controllers.graphfactory.GraphFactory;
 import mdlaf.MaterialLookAndFeel;
-import models.Operation;
-import models.OperationsStatistics;
-import models.StatisticType;
-import models.Tuple;
-import models.charts.IStatisticModel;
+import models.*;
+import models.enums.StatisticType;
+import models.graphs.GraphProperties;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,24 +15,19 @@ import views.OperationsView;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class OperationsManager implements IViewListener {
   private static final Logger LOG = LogManager.getLogger(OperationsManager.class);
 
   private final OperationsView view;
   private final Config config;
-  private final ChartModelsFactory chartModelsFactory;
   private OperationsStatistics operationsStatistics;
-  private Map<Tuple<StatisticType, List<Integer>>, Chart> cachedCharts;
-  private Chart currentChart;
+  private Chart currentGraph;
 
   OperationsManager(Config config) {
     this.config = config;
     view = new OperationsView(this, config);
-    chartModelsFactory = new ChartModelsFactory();
 
     readOperations();
   }
@@ -49,8 +43,8 @@ public class OperationsManager implements IViewListener {
         if (operations.isEmpty()) {
           view.showDialogMessage(config.getString(Config.OPERATIONS_NOT_FOUND), config.getIcon(Config.ALERT_ICON));
         } else {
-          cachedCharts = new HashMap<>();
           operationsStatistics = new OperationsStatistics(operations);
+          GraphFactory.initFactory(operationsStatistics, config);
 
           view.disableChartPane();
           view.enableEvent(Event.SAVE_CHART, false);
@@ -65,33 +59,29 @@ public class OperationsManager implements IViewListener {
     }
   }
 
-  private void generateChart(StatisticType statisticType, List<Integer> years) {
-    IStatisticModel statisticModel = chartModelsFactory.newStatisticModel(statisticType);
-    currentChart = cachedCharts.get(new Tuple<>(statisticType, years));
+  private void createGraph(GraphFactory.GraphFamily graphFamily, StatisticType statisticType,
+                           GraphProperties graphProperties) {
 
-    if (currentChart == null) {
-      currentChart = statisticModel.createChart(operationsStatistics, years, config);
-      cachedCharts.put(new Tuple<>(statisticType, years), currentChart);
-    }
+    currentGraph = GraphFactory.getFactory(graphFamily).createGraph(statisticType, graphProperties);
 
-    view.initChartView(currentChart);
+    view.initChartView(currentGraph);
     view.enableEvent(Event.SAVE_CHART, true);
 
-    LOG.info(config.getString(Config.CHART_GENERATED_LOG) + " " + currentChart.getTitle());
+    LOG.info(config.getString(Config.GRAPH_GENERATED_LOG) + " " + currentGraph.getTitle());
   }
 
   private void saveChart() {
     String filePath = view.selectFilePath(OperationsView.FILE_ACTION.SAVE);
 
     try {
-      BitmapEncoder.saveBitmapWithDPI(currentChart, filePath,
+      BitmapEncoder.saveBitmapWithDPI(currentGraph, filePath,
                                       BitmapEncoder.BitmapFormat.PNG, config.getInt(Config.PNG_PDI));
-      view.showDialogMessage(config.getString(Config.CHART_SAVED), config.getIcon(Config.SUCCESS_ICON));
+      view.showDialogMessage(config.getString(Config.GRAPH_SAVED), config.getIcon(Config.SUCCESS_ICON));
 
-      LOG.info(config.getString(Config.CHART_SAVED_LOG) + " " + filePath);
+      LOG.info(config.getString(Config.GRAPH_SAVED_LOG) + " " + filePath);
     } catch (IOException e) {
-      view.showDialogMessage(config.getString(Config.SAVE_CHART_ERROR), config.getIcon(Config.ALERT_ICON));
-      LOG.error(config.getString(Config.SAVE_CHART_ERROR));
+      view.showDialogMessage(config.getString(Config.SAVE_GRAPH_ERROR), config.getIcon(Config.ALERT_ICON));
+      LOG.error(config.getString(Config.SAVE_GRAPH_ERROR));
     }
   }
 
@@ -99,9 +89,10 @@ public class OperationsManager implements IViewListener {
   public void eventFired(Event event, Object o) {
     switch (event) {
       case OPEN_FILE -> readOperations();
-      case GENERATE_CHART -> {
-        Tuple<StatisticType, List<Integer>> tuple = (Tuple<StatisticType, List<Integer>>) o;
-        generateChart(tuple.a, tuple.b);
+      case GENERATE_GRAPH -> {
+          Tuple<GraphFactory.GraphFamily, Tuple<StatisticType, GraphProperties>> tuple =
+            (Tuple<GraphFactory.GraphFamily, Tuple<StatisticType, GraphProperties>>) o;
+          createGraph(tuple.a, tuple.b.a, tuple.b.b);
       }
       case SAVE_CHART -> saveChart();
     }
