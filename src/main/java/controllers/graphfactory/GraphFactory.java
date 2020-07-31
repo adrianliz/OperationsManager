@@ -16,14 +16,14 @@ public abstract class GraphFactory {
   protected static AircraftTypeGraph aircraftTypeGraph;
   protected static MTOWGraph MTOWGraph;
   protected static OperationsEvolutionGraph operationsEvolutionGraph;
-  protected static HeaderRunwaysGraph headerRunwaysGraph;
+  protected static HeaderRunwayGraph headerRunwayGraph;
 
   public static void initFactory(OperationsStatistics statistics, Config config) {
     schengenGraph = new SchengenGraph(statistics, config);
     aircraftTypeGraph = new AircraftTypeGraph(statistics, config);
     MTOWGraph = new MTOWGraph(statistics, config);
     operationsEvolutionGraph = new OperationsEvolutionGraph(statistics, config);
-    headerRunwaysGraph = new HeaderRunwaysGraph(statistics, config);
+    headerRunwayGraph = new HeaderRunwayGraph(statistics, config);
   }
 
   public static GraphFactory getFactory(GraphFamily graphFamily) {

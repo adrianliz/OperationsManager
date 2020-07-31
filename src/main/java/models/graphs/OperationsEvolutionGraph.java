@@ -15,27 +15,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class OperationsEvolutionGraph implements IYearGraph {
+public class OperationsEvolutionGraph extends Graph implements IYearGraph {
   private static final Logger LOG = LogManager.getLogger(OperationsEvolutionGraph.class);
 
-  private final OperationsStatistics statistics;
-  private final Config config;
-
   public OperationsEvolutionGraph(OperationsStatistics statistics, Config config) {
-    this.statistics = statistics;
-    this.config = config;
+    super(statistics, config);
   }
 
   @Override
   public Chart createGraph(List<Integer> years) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
     XYChart chart = new XYChartBuilder()
-      .title(config.getString(Config.OPERATIONS_EVOLUTION_GRAPH_TITLE))
-      .xAxisTitle(config.getString(Config.X_OPERATIONS_EVOLUTION_SERIES))
-      .yAxisTitle(config.getString(Config.Y_OPERATIONS_EVOLUTION_SERIES))
+      .title(super.config.getString(Config.OPERATIONS_EVOLUTION_GRAPH_TITLE))
+      .xAxisTitle(super.config.getString(Config.X_OPERATIONS_EVOLUTION_SERIES))
+      .yAxisTitle(super.config.getString(Config.Y_OPERATIONS_EVOLUTION_SERIES))
       .build();
 
-    LOG.info(config.getString(Config.GENERATING_GRAPH_LOG) + " " + chart.getTitle());
+    LOG.info(super.config.getString(Config.GENERATING_GRAPH_LOG) + " " + chart.getTitle());
 
     XYStyler styler = chart.getStyler();
     styler.setChartTitleVisible(true);
@@ -45,12 +41,12 @@ public class OperationsEvolutionGraph implements IYearGraph {
 
     List<Date> xData = new ArrayList<>();
     List<Integer> yData = new ArrayList<>();
-    String seriesName = config.getString(Config.OPERATIONS_EVOLUTION_SERIES_NAME);
+    String seriesName = super.config.getString(Config.OPERATIONS_EVOLUTION_SERIES_NAME);
 
     try {
       for (int year : years) {
         xData.add(sdf.parse(year + ""));
-        yData.add(statistics.getOperationsCount(year));
+        yData.add(super.statistics.getOperationsCount(year));
       }
 
       chart.addSeries(seriesName, xData, yData);

@@ -61,7 +61,7 @@ public class StatisticSelectionView extends JPanel {
     add(generateGraphButton);
 
     trimesterOptions.setVisible(false);
-    setVisible(false);
+    setVisible(true);
   }
 
   private void readSelection() {

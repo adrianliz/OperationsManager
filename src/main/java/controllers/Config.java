@@ -24,6 +24,7 @@ public class Config {
   public static final String EXCEL_DATE_FORMAT_INDEX = "EXCEL_DATE_FORMAT_INDEX";
   public static final String LANDINGS_SHEET = "LANDINGS_SHEET";
   public static final String DEPARTURES_SHEET = "DEPARTURES_SHEET";
+  public static final String SHEET_112 = "SHEET_112";
 
   /* VIEW CONFIG */
   public static final String MINIMUM_WINDOW_WIDTH = "MINIMUM_WINDOW_WIDTH";
@@ -61,6 +62,7 @@ public class Config {
   public static final String LAF_ERROR = "LAF_ERROR";
   public static final String FILE_EXT_ERROR = "FILE_EXT_ERROR";
   public static final String OPERATIONS_NOT_FOUND = "OPERATIONS_NOT_FOUND";
+  public static final String FILE_NOT_EXISTS_ERROR = "FILE_NOT_EXISTS_ERROR";
   public static final String SAVE_GRAPH_ERROR = "SAVE_CHART_ERROR";
 
   /* GRAPH CONFIG */

@@ -16,15 +16,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MTOWGraph implements IYearGraph {
+public class MTOWGraph extends Graph implements IYearGraph {
   private static final Logger LOG = LogManager.getLogger(MTOWGraph.class);
 
-  private final OperationsStatistics statistics;
-  private final Config config;
-
   public MTOWGraph(OperationsStatistics statistics, Config config) {
-    this.statistics = statistics;
-    this.config = config;
+    super(statistics, config);
   }
 
   @Override
@@ -32,12 +28,12 @@ public class MTOWGraph implements IYearGraph {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
     CategoryChart chart =
       new CategoryChartBuilder()
-        .title(config.getString(Config.MTOW_GRAPH_TITLE))
-        .xAxisTitle(config.getString(Config.X_MTOW_SERIES))
-        .yAxisTitle(config.getString(Config.Y_MTOW_SERIES))
+        .title(super.config.getString(Config.MTOW_GRAPH_TITLE))
+        .xAxisTitle(super.config.getString(Config.X_MTOW_SERIES))
+        .yAxisTitle(super.config.getString(Config.Y_MTOW_SERIES))
         .build();
 
-    LOG.info(config.getString(Config.GENERATING_GRAPH_LOG) + " " + chart.getTitle());
+    LOG.info(super.config.getString(Config.GENERATING_GRAPH_LOG) + " " + chart.getTitle());
 
     CategoryStyler styler = chart.getStyler();
     styler.setChartTitleVisible(true);
@@ -53,12 +49,12 @@ public class MTOWGraph implements IYearGraph {
     try {
       for (int year : years) {
         xData.add(sdf.parse(year + ""));
-        yData.add(statistics.getMTOWAverage(year));
+        yData.add(super.statistics.getMTOWAverage(year));
       }
 
-      chart.addSeries(config.getString(Config.MTOW_GRAPH_TITLE), xData, yData);
+      chart.addSeries(super.config.getString(Config.MTOW_GRAPH_TITLE), xData, yData);
     } catch (ParseException e) {
-      chart.addSeries(config.getString(Config.MTOW_GRAPH_TITLE), years, yData);
+      chart.addSeries(super.config.getString(Config.MTOW_GRAPH_TITLE), years, yData);
     }
 
     return chart;

@@ -3,7 +3,9 @@ package controllers;
 import com.poiji.exception.InvalidExcelFileExtension;
 import controllers.graphfactory.GraphFactory;
 import mdlaf.MaterialLookAndFeel;
-import models.*;
+import models.Operation;
+import models.OperationsStatistics;
+import models.Tuple;
 import models.enums.StatisticType;
 import models.graphs.GraphProperties;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -55,6 +57,8 @@ public class OperationsManager implements IViewListener {
         }
       } catch (InvalidExcelFileExtension e) {
         view.showDialogMessage(config.getString(Config.FILE_EXT_ERROR), config.getIcon(Config.ALERT_ICON));
+      } catch (IOException e) {
+        view.showDialogMessage(config.getString(Config.FILE_NOT_EXISTS_ERROR), config.getIcon(Config.ALERT_ICON));
       }
     }
   }

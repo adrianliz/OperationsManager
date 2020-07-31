@@ -34,12 +34,20 @@ public class Operation {
     return date;
   }
 
+  public void setDate(Calendar date) {
+    this.date = date;
+  }
+
   public AircraftType getAircraftType() {
     if (aircraftType == null) {
       aircraftType = AircraftType.getAircraftType(aircraftTypeRaw);
     }
 
     return aircraftType;
+  }
+
+  public void setAircraftType(AircraftType aircraftType) {
+    this.aircraftType = aircraftType;
   }
 
   public double getAircraftMTOW() {

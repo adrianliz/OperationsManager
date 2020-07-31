@@ -21,7 +21,7 @@ class YearGraphFactory extends GraphFactory {
         return operationsEvolutionGraph.createGraph(graphProperties.getYears());
       }
       case HEADER_RUNWAY_OP -> {
-        return headerRunwaysGraph.createGraph(graphProperties.getYears());
+        return headerRunwayGraph.createGraph(graphProperties.getYears());
       }
       default -> throw new IllegalStateException("Unexpected value: " + statisticType);
     }

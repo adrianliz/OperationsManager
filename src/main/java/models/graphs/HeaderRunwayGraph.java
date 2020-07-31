@@ -2,7 +2,6 @@ package models.graphs;
 
 import controllers.Config;
 import models.OperationsStatistics;
-import org.apache.commons.collections.ArrayStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.knowm.xchart.CategoryChart;
@@ -17,15 +16,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class HeaderRunwaysGraph implements IYearGraph {
-  private static final Logger LOG = LogManager.getLogger(HeaderRunwaysGraph.class);
+public class HeaderRunwayGraph extends Graph implements IYearGraph {
+  private static final Logger LOG = LogManager.getLogger(HeaderRunwayGraph.class);
 
-  private final OperationsStatistics statistics;
-  private final Config config;
-
-  public HeaderRunwaysGraph(OperationsStatistics statistics, Config config) {
-    this.statistics = statistics;
-    this.config = config;
+  public HeaderRunwayGraph(OperationsStatistics statistics, Config config) {
+    super(statistics, config);
   }
 
   @Override
@@ -33,12 +28,12 @@ public class HeaderRunwaysGraph implements IYearGraph {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
     CategoryChart chart =
       new CategoryChartBuilder()
-        .title(config.getString(Config.HEADER_RUNWAY_GRAPH_TITLE))
-        .xAxisTitle(config.getString(Config.X_HEADER_RUNWAY_SERIES))
-        .yAxisTitle(config.getString(Config.Y_HEADER_RUNWAY_SERIES))
+        .title(super.config.getString(Config.HEADER_RUNWAY_GRAPH_TITLE))
+        .xAxisTitle(super.config.getString(Config.X_HEADER_RUNWAY_SERIES))
+        .yAxisTitle(super.config.getString(Config.Y_HEADER_RUNWAY_SERIES))
         .build();
 
-    LOG.info(config.getString(Config.GENERATING_GRAPH_LOG) + " " + chart.getTitle());
+    LOG.info(super.config.getString(Config.GENERATING_GRAPH_LOG) + " " + chart.getTitle());
 
     CategoryStyler styler = chart.getStyler();
     styler.setHasAnnotations(true);
@@ -47,7 +42,7 @@ public class HeaderRunwaysGraph implements IYearGraph {
     styler.setDatePattern("yyyy");
     styler.setAvailableSpaceFill(.20);
 
-    List<Integer> headerRunways = statistics.getDifferentHeaderRunways();
+    List<Integer> headerRunways = super.statistics.getDifferentHeaderRunways();
     for (int headerRunway: headerRunways) {
       List<Date> xData = new ArrayList<>();
       List<Integer> yData = new ArrayList<>();
@@ -55,7 +50,7 @@ public class HeaderRunwaysGraph implements IYearGraph {
       try {
         for (int year : years) {
           xData.add(sdf.parse(year + ""));
-          yData.add(statistics.getOperationsCount(year, headerRunway));
+          yData.add(super.statistics.getOperationsCount(year, headerRunway));
         }
 
         chart.addSeries(headerRunway + "", xData, yData);
