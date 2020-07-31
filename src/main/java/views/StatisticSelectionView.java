@@ -19,6 +19,7 @@ public class StatisticSelectionView extends JPanel {
 
   private final OperationsView mainView;
   private final Config config;
+  private List<Integer> operationsYears;
 
   private ComboBoxModel<StatisticType> yearStatisticsOptions;
   private ComboBoxModel<StatisticType> trimesterStatisticsOptions;
@@ -26,6 +27,7 @@ public class StatisticSelectionView extends JPanel {
   private JComboBox<Integer> firstYearOptions;
   private JComboBox<Integer> lastYearOptions;
   private JComboBox<Trimester> trimesterOptions;
+  private JButton generateGraphButton;
 
   private GraphFactory.GraphFamily graphFamily;
 
@@ -49,9 +51,16 @@ public class StatisticSelectionView extends JPanel {
     firstYearOptions = new JComboBox<>();
     lastYearOptions = new JComboBox<>();
     trimesterOptions = new JComboBox<>(Trimester.values());
-    JButton generateGraphButton = new JButton(config.getString(Config.GENERATE_GRAPH_BUTTON));
+    generateGraphButton = new JButton(config.getString(Config.GENERATE_GRAPH_BUTTON));
 
     statisticOptions.addItemListener(e -> lastYearOptions.setEnabled(!e.getItem().equals(StatisticType.SCHENGEN_OP)));
+    firstYearOptions.addItemListener(e -> {
+      lastYearOptions.removeAllItems();
+
+      for (int year: operationsYears) {
+        if (year >= (int) e.getItem()) lastYearOptions.addItem(year);
+      }
+    });
     generateGraphButton.addActionListener(e -> readSelection());
 
     add(statisticOptions);
@@ -61,6 +70,7 @@ public class StatisticSelectionView extends JPanel {
     add(generateGraphButton);
 
     trimesterOptions.setVisible(false);
+    generateGraphButton.setEnabled(false);
     setVisible(true);
   }
 
@@ -92,8 +102,9 @@ public class StatisticSelectionView extends JPanel {
   }
 
   void initStatisticSelection(OperationsStatistics statistics) {
-    List<Integer> operationsYears = statistics.getDifferentYears();
+    operationsYears = statistics.getDifferentYears();
 
+    generateGraphButton.setEnabled(false);
     firstYearOptions.removeAllItems();
     lastYearOptions.removeAllItems();
 
@@ -102,15 +113,8 @@ public class StatisticSelectionView extends JPanel {
       lastYearOptions.addItem(year);
     }
 
-    firstYearOptions.addItemListener(e -> {
-      lastYearOptions.removeAllItems();
-
-      for (int year: operationsYears) {
-        if (year >= (int) e.getItem()) lastYearOptions.addItem(year);
-      }
-    });
-
-    setVisible(true);
+    generateGraphButton.setEnabled(true);
+    setEnabled(true);
   }
 
   void changeStatisticSelection(GraphFactory.GraphFamily graphFamily) {
