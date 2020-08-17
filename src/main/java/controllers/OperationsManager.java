@@ -16,7 +16,10 @@ import org.knowm.xchart.internal.chartpart.Chart;
 import views.OperationsView;
 
 import javax.swing.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 public class OperationsManager implements IViewListener {
@@ -35,7 +38,7 @@ public class OperationsManager implements IViewListener {
   }
 
   private void readOperations() {
-    String filePath = view.selectFilePath(OperationsView.FILE_CHOOSER_ACTION.OPEN);
+    String filePath = view.selectFilePath(OperationsView.FILE_CHOOSER_ACTION.OPEN_STATISTICS_FILE);
 
     if (filePath != null) {
       try {
@@ -75,7 +78,7 @@ public class OperationsManager implements IViewListener {
   }
 
   private void saveChart() {
-    String filePath = view.selectFilePath(OperationsView.FILE_CHOOSER_ACTION.SAVE);
+    String filePath = view.selectFilePath(OperationsView.FILE_CHOOSER_ACTION.SAVE_GRAPH);
 
     try {
       BitmapEncoder.saveBitmapWithDPI(currentGraph, filePath,

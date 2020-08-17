@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class OperationsView extends JFrame implements ActionListener {
-  public enum FILE_CHOOSER_ACTION {OPEN, SAVE}
+  public enum FILE_CHOOSER_ACTION {OPEN_STATISTICS_FILE, SAVE_GRAPH}
 
   private final IViewListener controller;
   private final Config config;
@@ -161,13 +161,13 @@ public class OperationsView extends JFrame implements ActionListener {
     FileNameExtensionFilter filter;
 
     switch (fileAction) {
-      case OPEN -> {
+      case OPEN_STATISTICS_FILE -> {
         filter = new FileNameExtensionFilter(config.getString(Config.EXCEL_DESC), config.getString(Config.EXCEL_EXT));
 
         fileChooser.setFileFilter(filter);
         result = fileChooser.showOpenDialog(this);
       }
-      case SAVE -> {
+      case SAVE_GRAPH -> {
         filter = new FileNameExtensionFilter(config.getString(Config.PNG_DESC), config.getString(Config.PNG_EXT));
 
         fileChooser.setFileFilter(filter);
