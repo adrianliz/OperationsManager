@@ -8,6 +8,7 @@ import models.enums.StatisticType;
 import models.enums.Trimester;
 import models.graphs.GraphProperties;
 
+import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,13 +55,19 @@ public class StatisticSelectionView extends JPanel {
     generateGraphButton = new JButton(config.getString(Config.GENERATE_GRAPH_BUTTON));
 
     statisticOptions.addItemListener(e -> lastYearOptions.setEnabled(!e.getItem().equals(StatisticType.SCHENGEN_OP)));
-    firstYearOptions.addItemListener(e -> {
-      lastYearOptions.removeAllItems();
 
-      for (int year: operationsYears) {
-        if (year >= (int) e.getItem()) lastYearOptions.addItem(year);
+    firstYearOptions.addItemListener(e -> {
+      if (e.getStateChange() == ItemEvent.SELECTED) {
+        lastYearOptions.removeAllItems();
+
+        if (lastYearOptions.getItemCount() == 0) {
+          for (int year : operationsYears) {
+            if (year >= (int) e.getItem()) lastYearOptions.addItem(year);
+          }
+        }
       }
     });
+
     generateGraphButton.addActionListener(e -> readSelection());
 
     add(statisticOptions);
@@ -110,7 +117,6 @@ public class StatisticSelectionView extends JPanel {
 
     for (int year: operationsYears) {
       firstYearOptions.addItem(year);
-      lastYearOptions.addItem(year);
     }
 
     generateGraphButton.setEnabled(true);

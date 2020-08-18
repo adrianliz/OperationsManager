@@ -13,7 +13,7 @@ import org.knowm.xchart.style.PieStyler;
 import java.util.List;
 
 public class SchengenGraph extends Graph implements IYearGraph {
-  private static final Logger LOG = LogManager.getLogger(MTOWGraph.class);
+  private static final Logger LOG = LogManager.getLogger(SchengenGraph.class);
 
   public SchengenGraph(OperationsStatistics statistics, Config config) {
     super(statistics, config);
