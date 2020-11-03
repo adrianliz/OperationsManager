@@ -2,9 +2,10 @@
 OperationsManager es un software que pretende automatizar la generación de distintas estadísticas de las operaciones
 del aeropuerto de Teruel (PLATA)
 
-## Estado
+## Contexto y estado
+Este proyecto fue realizado durante mis prácticas universitarias en PLATA
 ```diff
-+ [En desarrollo]
+- [Terminado]
 ```
 
 ## Requerimientos
