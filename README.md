@@ -5,7 +5,7 @@ del aeropuerto de Teruel (PLATA)
 ## Contexto y estado 💡
 Este proyecto fue realizado durante mis prácticas universitarias en PLATA
 ```diff
-- [Terminado]
+- [Finalizado]
 ```
 
 ## Requerimientos 🔏
